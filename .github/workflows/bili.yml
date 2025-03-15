@@ -37,15 +37,11 @@ jobs:
         bvid: ${{ inputs.bvid }}
         token: ${{ secrets.GEMINI_TOKEN }}
         bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
-    - name: Download output.md
-      uses: actions/download-artifact@v4
-      with:
-        name: tmp.md
-        path: tmp.md
     - name: move to dest
       run: |
         filepath=docs/${{ steps.bili.outputs.owner.name }}/${{ steps.bili.outputs.pubdate }}-${{ steps.bili.outputs.title }}.md
         mkdir -p docs/${{ steps.bili.outputs.owner.name }}
+        echo '${{ steps.call-stt-workflow.outputs.markdown }}' > tmp.md
         mv tmp.md $filepath
     - name: Create Pull Request
       id: cpr

@@ -20,6 +20,9 @@ inputs:
     description: 'gemini model'
     default: "gemini-2.0-pro-exp-02-05"
     required: false
+outputs:
+  markdown:
+    description: markdown
 runs:
   using: "composite"
   steps:
@@ -73,10 +76,14 @@ runs:
         ---
         ' >> tmp.md
         cat output.md >> tmp.md
-    - name: Upload output.md
-      uses: actions/upload-artifact@v4
-      with:
-        name: tmp.md
-        path: tmp.md
-        if-no-files-found: error
-        retention-days: 1
+    - name: set output
+      shell: bash
+      run: |
+        echo "markdown=$(cat tmp.md)" >> "$GITHUB_OUTPUT"
+#    - name: Upload output.md
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: tmp.md
+#        path: tmp.md
+#        if-no-files-found: error
+#        retention-days: 1
