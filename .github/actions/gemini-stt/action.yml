@@ -72,7 +72,6 @@ runs:
         bvid: ${{steps.bili.outputs.bvid }}
         ---
         ' >> tmp.md
-        mkdir -p ${{ steps.path-resolver.outputs.path }}
         cat output.md >> tmp.md
     - name: Upload output.md
       uses: actions/upload-artifact@v4
