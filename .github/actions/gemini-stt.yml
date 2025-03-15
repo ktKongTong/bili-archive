@@ -1,0 +1,74 @@
+name: gemini-STT
+inputs:
+  bvid:
+    description: 'Bilibili bvid'
+  prompt:
+    description: 'prompt'
+    default: |
+      下面是一段音频，请识别为文本。不要返回额外的内容。
+      拆分为合适的段落，并适当的加上标点符号标记。
+      段落与段落之间请用两个换行符号分割，段落不宜太松散，也不宜太紧凑。
+      请一定不要对原文进行较大幅度的删改、任何删改请务必使用~~~进行标识。
+      此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
+    required: false
+  model:
+    description: 'gemini model'
+    default: "gemini-2.0-pro-exp-02-05"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Setup FFmpeg
+      uses: AnimMouse/setup-ffmpeg@v1
+    - name: get and download video
+      id: bili
+      uses: ktKongTong/bili-action@v0.2.4
+      with:
+        bvid: ${{ inputs.bvid }}
+        proxy-stream-host: ${{ secrets.BILI_STREAM_PROXY }}
+        audio: true
+        audio-file-template: 'output/{bvid}.mp4'
+    - name: set output to json
+      run: echo '${{ steps.bili.outputs.video }}' > video.json
+    - name: convert to mp3
+      run: ffmpeg -i output/${{ steps.bili.outputs.bvid }}.mp4 -ar 16000 output/${{ steps.bili.outputs.bvid }}.mp3
+    - name: Upload output.mp3
+      uses: actions/upload-artifact@v4
+      with:
+        name: output.mp3
+        path: output/${{ steps.bili.outputs.bvid }}.mp3
+        if-no-files-found: error
+        retention-days: 1
+    - name: speech to text with gemini
+      uses: ktKongTong/gemini-action@v0.2.0
+      id: gemini-stt
+      with:
+        token: ${{ secrets.GEMINI_TOKEN }}
+        model: ${{inputs.model}}
+        file-path: output/${{ steps.bili.outputs.bvid }}.mp3
+        prompt: |
+          ${{ inputs.prompt }}
+        file-mime: audio/mp3
+    - name: show result
+      run: |
+        echo "${{steps.gemini-stt.outputs.output}}" > output.md
+        cat output.md
+    - name: createHead
+      run: |
+        echo '---
+        title: ${{steps.bili.outputs.title }}
+        description: ${{steps.bili.outputs.desc }}
+        tag: []
+        date: ${{steps.bili.outputs.pubdate }}
+        bvid: ${{steps.bili.outputs.bvid }}
+        ---
+        ' >> tmp.md
+        mkdir -p ${{ steps.path-resolver.outputs.path }}
+        cat output.md >> tmp.md
+    - name: Upload output.md
+      uses: actions/upload-artifact@v4
+      with:
+        name: tmp.md
+        path: tmp.md
+        if-no-files-found: error
+        retention-days: 1

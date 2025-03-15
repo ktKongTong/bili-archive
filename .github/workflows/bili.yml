@@ -31,9 +31,9 @@ jobs:
       with:
         bvid: ${{ inputs.bvid }}
     - id: call-stt-workflow
-      uses: ./.github/workflows/gemini-stt.yml
+      uses: ./.github/actions/gemini-stt.yml
       with:
-        bvid: ${{ steps.bili.outputs.bvid }}
+        bvid: ${{ inputs.bvid }}
     - name: Download output.md
       uses: actions/download-artifact@v4
       with:
