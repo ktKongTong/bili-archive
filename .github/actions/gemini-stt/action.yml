@@ -87,9 +87,9 @@ runs:
     - name: clean file
       shell: bash
       run: |
-        rm video.json
-        rm tmp.md
-        rm output.md
+        rm -f video.json
+        rm -f tmp.md
+        rm -f output.md
         rm -rf output
 #    - name: Upload output.md
 #      uses: actions/upload-artifact@v4
