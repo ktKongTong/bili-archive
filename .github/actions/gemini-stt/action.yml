@@ -34,8 +34,10 @@ runs:
         audio: true
         audio-file-template: 'output/{bvid}.mp4'
     - name: set output to json
+      shell: bash
       run: echo '${{ steps.bili.outputs.video }}' > video.json
     - name: convert to mp3
+      shell: bash
       run: ffmpeg -i output/${{ steps.bili.outputs.bvid }}.mp4 -ar 16000 output/${{ steps.bili.outputs.bvid }}.mp3
     - name: Upload output.mp3
       uses: actions/upload-artifact@v4
@@ -55,10 +57,12 @@ runs:
           ${{ inputs.prompt }}
         file-mime: audio/mp3
     - name: show result
+      shell: bash
       run: |
         echo "${{steps.gemini-stt.outputs.output}}" > output.md
         cat output.md
     - name: createHead
+      shell: bash
       run: |
         echo '---
         title: ${{steps.bili.outputs.title }}
