@@ -2,6 +2,11 @@ name: gemini-STT
 inputs:
   bvid:
     description: 'Bilibili bvid'
+  token:
+    description: 'gemini-token'
+  bili-proxy:
+    description: 'bili-proxy-host'
+    required: false
   prompt:
     description: 'prompt'
     default: |
@@ -25,7 +30,7 @@ runs:
       uses: ktKongTong/bili-action@v0.2.4
       with:
         bvid: ${{ inputs.bvid }}
-        proxy-stream-host: ${{ secrets.BILI_STREAM_PROXY }}
+        proxy-stream-host: ${{ inputs.bili-proxy }}
         audio: true
         audio-file-template: 'output/{bvid}.mp4'
     - name: set output to json
@@ -43,7 +48,7 @@ runs:
       uses: ktKongTong/gemini-action@v0.2.0
       id: gemini-stt
       with:
-        token: ${{ secrets.GEMINI_TOKEN }}
+        token: ${{inputs.token}}
         model: ${{inputs.model}}
         file-path: output/${{ steps.bili.outputs.bvid }}.mp3
         prompt: |

@@ -35,6 +35,8 @@ jobs:
       uses: ./.github/actions/gemini-stt
       with:
         bvid: ${{ inputs.bvid }}
+        token: ${{ secrets.GEMINI_TOKEN }}
+        bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
     - name: Download output.md
       uses: actions/download-artifact@v4
       with:
