@@ -1,0 +1,32 @@
+{
+  "name": "fuma",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "15.2.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "fumadocs-ui": "15.0.18",
+    "fumadocs-core": "15.0.18",
+    "@content-collections/mdx": "^0.2.2",
+    "@content-collections/core": "^0.8.2",
+    "@content-collections/next": "^0.2.6",
+    "@fumadocs/content-collections": "1.1.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "typescript": "^5.8.2",
+    "@tailwindcss/postcss": "^4.0.14",
+    "tailwindcss": "^4.0.14",
+    "postcss": "^8.5.3",
+    "eslint": "^8",
+    "eslint-config-next": "15.2.2"
+  }
+}
