@@ -42,6 +42,7 @@ jobs:
         mkdir -p docs/${{ fromJSON(steps.bili.outputs.owner).name }}
         echo "${{ steps.call-stt-workflow.outputs.markdown }}" > docs/${{ fromJSON(steps.bili.outputs.owner).name }}/${{ steps.bili.outputs.pubdate }}-${{ steps.bili.outputs.title }}.md
         ls -l docs/${{ fromJSON(steps.bili.outputs.owner).name }}
+        git add docs
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v5
