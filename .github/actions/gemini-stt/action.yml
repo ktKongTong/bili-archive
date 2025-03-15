@@ -79,7 +79,11 @@ runs:
     - name: set output
       shell: bash
       run: |
-        echo "markdown=$(cat tmp.md)" >> "$GITHUB_OUTPUT"
+        {
+          echo 'markdown<<EOF'
+            cat tmp.md
+          echo EOF
+        } >> "$GITHUB_OUTPUT"
 #    - name: Upload output.md
 #      uses: actions/upload-artifact@v4
 #      with:
