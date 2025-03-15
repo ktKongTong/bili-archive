@@ -23,6 +23,7 @@ inputs:
 outputs:
   markdown:
     description: markdown
+    value: ${{ steps.final-output.outputs.markdown }}
 runs:
   using: "composite"
   steps:
@@ -76,7 +77,14 @@ runs:
         ---
         ' >> tmp.md
         cat output.md >> tmp.md
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          const name = 'markdown'
+          const value = 'Hello\nWorld'
+          core.setOutput(name, value)
     - name: set output
+      id: final-output
       shell: bash
       run: |
         echo 'markdown<<EOF' >> $GITHUB_OUTPUT
