@@ -1,4 +1,4 @@
-name: stt-gemini
+name: bili-stt
 on:
   workflow_dispatch:
     inputs:
