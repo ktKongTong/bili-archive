@@ -37,9 +37,9 @@ runs:
         proxy-stream-host: ${{ inputs.bili-proxy }}
         audio: true
         audio-file-template: 'output/{bvid}.mp4'
-    - name: set output to json
-      shell: bash
-      run: echo '${{ steps.bili.outputs.video }}' > video.json
+#    - name: set output to json
+#      shell: bash
+#      run: echo '${{ steps.bili.outputs.video }}' > video.json
     - name: convert to mp3
       shell: bash
       run: ffmpeg -i output/${{ steps.bili.outputs.bvid }}.mp4 -ar 16000 output/${{ steps.bili.outputs.bvid }}.mp3
@@ -77,12 +77,6 @@ runs:
         ---
         ' >> tmp.md
         cat output.md >> tmp.md
-    - uses: actions/github-script@v6
-      with:
-        script: |
-          const name = 'markdown'
-          const value = 'Hello\nWorld'
-          core.setOutput(name, value)
     - name: set output
       id: final-output
       shell: bash
@@ -90,7 +84,13 @@ runs:
         echo 'markdown<<EOF' >> $GITHUB_OUTPUT
         cat tmp.md >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
-
+    - name: clean file
+      shell: bash
+      run: |
+        rm video.json
+        rm tmp.md
+        rm output.md
+        rm -rf output
 #    - name: Upload output.md
 #      uses: actions/upload-artifact@v4
 #      with:
