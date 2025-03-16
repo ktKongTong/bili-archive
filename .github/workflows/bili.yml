@@ -73,6 +73,7 @@ jobs:
           model: ${{ env.model }}
       - name: move to dest
         run: |
+          markdown=${{ steps.call-stt-workflow.outputs.markdown }}
           filepath=${{steps.path-resolver.outputs.filepath}}
           filename=${{steps.path-resolver.outputs.filename}}
           echo "$filepath"
