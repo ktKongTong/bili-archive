@@ -24,6 +24,7 @@ on:
     inputs:
       bvid:
         description: "Bilibili bvid"
+        required: true
       prompt:
         description: "prompt"
         default: |
