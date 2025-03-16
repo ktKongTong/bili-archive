@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       bvid:
-        description: 'Bilibili bvid'
+        description: "Bilibili bvid"
       prompt:
-        description: 'prompt'
+        description: "prompt"
         default: |
           下面是一段音频，请识别为文本。不要返回额外的内容。
           拆分为合适的段落，并适当的加上标点符号标记。
@@ -14,18 +14,18 @@ on:
           此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
         required: false
       model:
-        description: 'gemini model'
+        description: "gemini model"
         type: choice
         default: "gemini-2.0-pro-exp-02-05"
         options:
-          - 'gemini-2.0-pro-exp-02-05'
-          - 'gemini-2.0-flash'
+          - "gemini-2.0-pro-exp-02-05"
+          - "gemini-2.0-flash"
   workflow_call:
     inputs:
       bvid:
-        description: 'Bilibili bvid'
+        description: "Bilibili bvid"
       prompt:
-        description: 'prompt'
+        description: "prompt"
         default: |
           下面是一段音频，请识别为文本。不要返回额外的内容。
           拆分为合适的段落，并适当的加上标点符号标记。
@@ -34,7 +34,7 @@ on:
           此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
         required: false
       model:
-        description: 'gemini model'
+        description: "gemini model"
         default: "gemini-2.0-pro-exp-02-05"
         required: false
 jobs:
@@ -50,7 +50,7 @@ jobs:
           bvid: ${{ inputs.bvid }}
           proxy-stream-host: ${{ secrets.BILI_STREAM_PROXY }}
           audio: true
-          audio-file-template: 'output/{bvid}.mp4'
+          audio-file-template: "output/{bvid}.mp4"
       - name: set output to json
         run: echo '${{ steps.bili.outputs.video }}' > video.json
       - name: convert to mp3

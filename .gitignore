@@ -27,3 +27,7 @@ yarn-error.log*
 .vercel
 next-env.d.ts
 .idea
+.input
+.secrets
+fuma/node_modules
+fuma/.next

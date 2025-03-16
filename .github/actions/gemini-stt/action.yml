@@ -1,14 +1,14 @@
 name: gemini-STT
 inputs:
   bvid:
-    description: 'Bilibili bvid'
+    description: "Bilibili bvid"
   token:
-    description: 'gemini-token'
+    description: "gemini-token"
   bili-proxy:
-    description: 'bili-proxy-host'
+    description: "bili-proxy-host"
     required: false
   prompt:
-    description: 'prompt'
+    description: "prompt"
     default: |
       下面是一段音频，请识别为文本。不要返回额外的内容。
       拆分为合适的段落，并适当的加上标点符号标记。
@@ -17,7 +17,7 @@ inputs:
       此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
     required: false
   model:
-    description: 'gemini model'
+    description: "gemini model"
     default: "gemini-2.0-pro-exp-02-05"
     required: false
 outputs:
@@ -36,10 +36,10 @@ runs:
         bvid: ${{ inputs.bvid }}
         proxy-stream-host: ${{ inputs.bili-proxy }}
         audio: true
-        audio-file-template: 'output/{bvid}.mp4'
-#    - name: set output to json
-#      shell: bash
-#      run: echo '${{ steps.bili.outputs.video }}' > video.json
+        audio-file-template: "output/{bvid}.mp4"
+    #    - name: set output to json
+    #      shell: bash
+    #      run: echo '${{ steps.bili.outputs.video }}' > video.json
     - name: convert to mp3
       shell: bash
       run: ffmpeg -i output/${{ steps.bili.outputs.bvid }}.mp4 -ar 16000 output/${{ steps.bili.outputs.bvid }}.mp3
@@ -91,6 +91,7 @@ runs:
         rm -f tmp.md
         rm -f output.md
         rm -rf output
+
 #    - name: Upload output.md
 #      uses: actions/upload-artifact@v4
 #      with:

@@ -1,0 +1,8 @@
+- id: 睡前消息
+  and:
+    title: "睡前消息"
+    owner.mid: 316568752
+    owner.name: "马督工"
+  template:
+    filename: {{pubdate}}-{{title}}.md
+    filepath: docs/btnews/睡前消息
