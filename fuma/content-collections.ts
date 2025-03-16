@@ -8,7 +8,7 @@ import {
 const docs = defineCollection({
   name: "docs",
   directory: "../docs",
-  include: "**/*.md",
+  include: ["**/*.mdx", "**/*.md"],
   schema: createDocSchema,
   transform: transformMDX,
 });
