@@ -73,8 +73,8 @@ jobs:
           model: ${{ env.model }}
       - name: move to dest
         run: |
-          filepath=${{steps.path-resolver.outputs.filepath}}
-          filename=${{steps.path-resolver.outputs.filename}}
+          filepath="${{steps.path-resolver.outputs.filepath}}"
+          filename="${{steps.path-resolver.outputs.filename}}"
           echo "$filepath"
           echo "$filename"
           mkdir -p $filepath
