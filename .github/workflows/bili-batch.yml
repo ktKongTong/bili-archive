@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: get and download video
         id: bili
-        uses: ktKongTong/bili-action@v0.2.6
+        uses: ktKongTong/bili-action@v0.2.8
         with:
           mid: ${{ env.mid }}
           keyword: ${{ env.keywords }}

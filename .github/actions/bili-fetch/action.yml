@@ -46,7 +46,7 @@ runs:
         token: ${{ inputs.github-token }}
     - name: get video
       id: bili
-      uses: ktKongTong/bili-action@v0.2.6
+      uses: ktKongTong/bili-action@v0.2.8
       with:
         bvid: ${{ inputs.bvid }}
     - id: path-resolver
