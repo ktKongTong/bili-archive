@@ -34,7 +34,7 @@ jobs:
   batch-get-video:
     runs-on: ubuntu-latest
     outputs:
-      videos: ${{ steps.bili.outputs.result }}
+      videos: ${{ steps.set-result.outputs.result }}
     steps:
       - name: get and download video
         id: bili
