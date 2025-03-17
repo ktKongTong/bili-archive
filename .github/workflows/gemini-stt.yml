@@ -63,7 +63,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       - name: speech to text with gemini
-        uses: ktKongTong/gemini-action@v0.2.0
+        uses: ktKongTong/gemini-action@v0.2.1
         id: gemini-stt
         with:
           token: ${{ secrets.GEMINI_TOKEN }}
