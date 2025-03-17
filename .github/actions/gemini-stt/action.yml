@@ -46,7 +46,7 @@ runs:
     - name: Upload output.mp3
       uses: actions/upload-artifact@v4
       with:
-        name: output.mp3
+        name: ${{ steps.bili.outputs.bvid }}.mp3
         path: output/${{ steps.bili.outputs.bvid }}.mp3
         if-no-files-found: error
         retention-days: 1
