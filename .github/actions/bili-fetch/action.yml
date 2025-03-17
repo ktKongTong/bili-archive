@@ -1,0 +1,93 @@
+name: bili-fetch-action
+inputs:
+  bvid:
+    description: "Bilibili bvid"
+    required: true
+  token:
+    description: "gemini-token"
+    required: true
+  bili-proxy:
+    description: "bili-proxy-host"
+    required: false
+  prompt:
+    description: "prompt"
+    required: false
+  model:
+    description: "gemini model"
+    required: true
+  github-token:
+    description: "github-token"
+    required: true
+  exec-even-exist:
+    description: "should continue if exist"
+    type: 'boolean'
+    required: true
+  branch:
+    description: "branch to commit or pr"
+    required: true
+  message:
+    description: "commit message"
+    required: true
+outputs:
+  created:
+    description: new file ready to commit
+    value: ${{ steps.check-exist.outputs.continue }}
+runs:
+  using: "composite"
+  steps:
+    - name: show result
+      run: |
+        echo "current bvid ${{ inputs.bvid }}"
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{inputs.branch}}
+        token: '${{ inputs.github-token }}'
+    - name: get video
+      id: bili
+      uses: ktKongTong/bili-action@v0.2.6
+      with:
+        bvid: ${{ inputs.bvid }}
+    - id: path-resolver
+      uses: ktKongTong/simple-format-action@v0.1.0
+      with:
+        data: ${{ steps.bili.outputs.video }}
+        rule-file: .github/format.rule.yml
+        fallback-template: |
+          filename:{{pubdate}}-{{title}}.md
+          filepath:docs/{{owner.name}}
+    - id: check-exist
+      run: |
+        filepath="${{steps.path-resolver.outputs.filepath}}"
+        filename="${{steps.path-resolver.outputs.filename}}"
+        if [ ! -f "$filepath/$filename" ] || [ "${{inputs.exec-even-exist}}" = "true" ]; then
+          echo "continue=true" >> $GITHUB_OUTPUT
+        else
+          echo "continue=false" >> $GITHUB_OUTPUT
+        fi
+    - id: call-stt-workflow
+      if: ${{ steps.check-exist.outputs.continue }}
+      uses: ./.github/actions/gemini-stt
+      with:
+        bvid: ${{ steps.bili.outputs.bvid }}
+        token: ${{ inputs.token }}
+        bili-proxy: ${{ inputs.bili-proxy }}
+        prompt: ${{ inputs.prompt }}
+        model: ${{ inputs.model }}
+    - name: move to dest
+      if: ${{ steps.check-exist.outputs.continue }}
+      run: |
+        filepath="${{steps.path-resolver.outputs.filepath}}"
+        filename="${{steps.path-resolver.outputs.filename}}"
+        echo "$filepath"
+        echo "$filename"
+        mkdir -p $filepath
+        echo "${{ steps.call-stt-workflow.outputs.markdown }}" > $filepath/$filename
+        ls -l $filepath
+    - name: commit and push
+      uses: ./.github/actions/pr-or-commit
+      with:
+        branch: ${{ inputs.branch }}
+        message: ${{ inputs.message }}
+        path: 'docs/**/*.md'
+        github-token: ${{ inputs.github-token }}
+        commit: 'true'
