@@ -68,7 +68,7 @@ runs:
           echo "continue=false" >> $GITHUB_OUTPUT
         fi
     - id: call-stt-workflow
-      if: ${{ steps.check-exist.outputs.continue }}
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
       uses: ./.github/actions/gemini-stt
       with:
         bvid: ${{ steps.bili.outputs.bvid }}
@@ -77,7 +77,7 @@ runs:
         prompt: ${{ inputs.prompt }}
         model: ${{ inputs.model }}
     - name: move to dest
-      if: ${{ steps.check-exist.outputs.continue }}
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
       shell: bash
       run: |
         filepath="${{steps.path-resolver.outputs.filepath}}"
@@ -88,7 +88,7 @@ runs:
         echo "${{ steps.call-stt-workflow.outputs.markdown }}" > $filepath/$filename
         ls -l $filepath
     - name: commit and push
-      if: ${{ steps.check-exist.outputs.continue }}
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
       uses: ./.github/actions/pr-or-commit
       with:
         branch: ${{ inputs.branch }}

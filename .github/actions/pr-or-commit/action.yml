@@ -19,7 +19,7 @@ runs:
   using: "composite"
   steps:
     - name: Create Pull Request
-      if: ${{ inputs.pr }}
+      if: ${{ inputs.pr == 'true' }}
       id: cpr
       uses: peter-evans/create-pull-request@v5
       with:
@@ -36,7 +36,7 @@ runs:
           automated pr
         draft: false
     - name: commit and push
-      if: ${{ inputs.commit }}
+      if: ${{ inputs.commit == 'true' }}
       uses: EndBug/add-and-commit@v9
       with:
         author_name: "${{ github.actor }}"
