@@ -40,7 +40,7 @@ runs:
       run: |
         echo "current bvid ${{ inputs.bvid }}"
     - name: checkout to another branch
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
       with:
         ref: ${{ inputs.branch }}
         token: ${{ inputs.github-token }}
