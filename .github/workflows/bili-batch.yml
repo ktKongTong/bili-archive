@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[0] }}
     steps:
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[1] }}
     steps:
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[2] }}
     steps:
@@ -142,7 +142,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[3] }}
     steps:
