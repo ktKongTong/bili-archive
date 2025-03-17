@@ -60,8 +60,8 @@ jobs:
         uses: peterjgrainger/action-create-branch@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-          with:
-            branch: 'batch/${{env.mid}}/${{env.keywords}}'
+        with:
+          branch: 'batch/${{env.mid}}/${{env.keywords}}'
   get-video-item:
     needs: [batch-get-video]
     runs-on: ubuntu-latest
