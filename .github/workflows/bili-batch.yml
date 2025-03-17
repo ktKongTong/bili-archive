@@ -161,9 +161,6 @@ jobs:
       - name: show result
         run: echo "current bvid ${{ matrix.bvid }}"
       - uses: actions/checkout@v4
-        with:
-          ref: 'batch/${{env.mid}}/${{env.keywords}}'
-          token: ${{ secrets.PAT }}
       - name: get content
         uses: ./.github/actions/bili-fetch
         with:
