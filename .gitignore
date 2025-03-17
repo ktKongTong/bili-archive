@@ -32,3 +32,4 @@ next-env.d.ts
 fuma/node_modules
 fuma/.next
 batch.yml
+.github/workflows/batch.yml

@@ -33,8 +33,9 @@ env:
 jobs:
   batch-get-video:
     runs-on: ubuntu-latest
+    outputs:
+      videos: ${{ fromJSON(steps.bili.outputs.batch) }}
     steps:
-      - uses: actions/checkout@v4
       - name: get and download video
         id: bili
         uses: ktKongTong/bili-action@v0.2.6
@@ -48,8 +49,16 @@ jobs:
           echo "${{ fromJSON(steps.bili.outputs.batch) }}"
           echo "${{ fromJSON(steps.bili.outputs.batch).*.bvid }}"
 
-#  get-video-item:
-#    needs: [batch-get-video]
+  get-video-item:
+    needs: [batch-get-video]
+    runs-on: ubuntu-latest
+    steps:
+      - name: show result
+        run: |
+          echo "${{ toJSON(needs.batch-get-video.outputs.videos) }}"
+          echo "${{ join(fromJSON(needs.batch-get-video.outputs.videos).*.bvid) }}"
+
+
 #    strategy:
 #      matrix:
 #        bvid: ${{ fromJSON(needs.batch-get-video.outputs.bvid) }}
