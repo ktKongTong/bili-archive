@@ -38,10 +38,6 @@ runs:
     - name: show result
       run: |
         echo "current bvid ${{ inputs.bvid }}"
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{inputs.branch}}
-        token: '${{ inputs.github-token }}'
     - name: get video
       id: bili
       uses: ktKongTong/bili-action@v0.2.6
