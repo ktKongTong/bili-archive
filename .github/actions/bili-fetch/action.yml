@@ -84,6 +84,7 @@ runs:
         echo "${{ steps.call-stt-workflow.outputs.markdown }}" > $filepath/$filename
         ls -l $filepath
     - name: commit and push
+      if: ${{ steps.check-exist.outputs.continue }}
       uses: ./.github/actions/pr-or-commit
       with:
         branch: ${{ inputs.branch }}
