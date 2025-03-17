@@ -50,7 +50,7 @@ jobs:
         with:
           script: | 
             const bvids = "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
-            // const allId = bvids.split(',')
+            const allId = bvids.split(',')
             // const chunk1 = allId.slice(0, 250)
             // const chunk2 = allId.slice(250, 500)
             // const chunk3 = allId.slice(500, 750)
