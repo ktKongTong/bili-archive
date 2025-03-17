@@ -10,6 +10,7 @@ on:
         description: "keywords filter"
       max-parallel:
         default: 4
+        type: number
         required: false
         description: "max-parallel"
       exec-even-exist:
