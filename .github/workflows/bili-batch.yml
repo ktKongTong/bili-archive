@@ -50,13 +50,18 @@ jobs:
         with:
           script: | 
             const bvids = "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
-            const chunk1 = bvids.split(',').slice(0,255)
+            const chunk1 = bvids.split(',').slice(0,10)
             // .map(it=>it.bvid)
             console.log(chunk1)
             return chunk1
       - name: Get result
         run: echo "${{steps.set-result.outputs.result}}"
-
+      - name: create-branch
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+          with:
+            branch: 'batch/${{env.mid}}/${{env.keywords}}'
   get-video-item:
     needs: [batch-get-video]
     runs-on: ubuntu-latest
@@ -67,3 +72,43 @@ jobs:
       - name: show result
         run: |
           echo "current bvid ${{ matrix.bvid }}"
+      - uses: actions/checkout@v4
+        with:
+          ref: 'batch/${{env.mid}}/${{env.keywords}}'
+      - name: get and download video
+        id: bili
+        uses: ktKongTong/bili-action@v0.2.6
+        with:
+          bvid: ${{ matrix.bvid }}
+      - id: path-resolver
+        uses: ktKongTong/simple-format-action@v0.1.0
+        with:
+          data: ${{ steps.bili.outputs.video }}
+          rule-file: .github/format.rule.yml
+          fallback-template: |
+            filename:{{pubdate}}-{{title}}.md
+            filepath:docs/{{owner.name}}
+      - id: call-stt-workflow
+        uses: ./.github/actions/gemini-stt
+        with:
+          bvid: ${{ steps.bili.outputs.bvid }}
+          token: ${{ secrets.GEMINI_TOKEN }}
+          bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
+          prompt: ${{ env.prompt }}
+          model: ${{ env.model }}
+      - name: move to dest
+        run: |
+          filepath="${{steps.path-resolver.outputs.filepath}}"
+          filename="${{steps.path-resolver.outputs.filename}}"
+          echo "$filepath"
+          echo "$filename"
+          mkdir -p $filepath
+          echo "${{ steps.call-stt-workflow.outputs.markdown }}" > $filepath/$filename
+          ls -l $filepath
+      - name: commit and push
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: "${{ github.actor }}"
+          author_email: ${{ github.actor }}@users.noreply.github.com
+          message: ":memo: new docs ${{ steps.bili.outputs.title }}"
+          add: 'docs/**/*.md'
