@@ -45,7 +45,7 @@ jobs:
         uses: AnimMouse/setup-ffmpeg@v1
       - name: get and download video
         id: bili
-        uses: ktKongTong/bili-action@v0.2.8
+        uses: ktKongTong/bili-action@v0.2.9
         with:
           bvid: ${{ inputs.bvid }}
           proxy-stream-host: ${{ secrets.BILI_STREAM_PROXY }}

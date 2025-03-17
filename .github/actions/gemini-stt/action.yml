@@ -34,7 +34,7 @@ runs:
       uses: AnimMouse/setup-ffmpeg@v1
     - name: get and download video
       id: bili
-      uses: ktKongTong/bili-action@v0.2.8
+      uses: ktKongTong/bili-action@v0.2.9
       with:
         bvid: ${{ inputs.bvid }}
         proxy-stream-host: ${{ inputs.bili-proxy }}
@@ -51,7 +51,7 @@ runs:
         if-no-files-found: error
         retention-days: 1
     - name: speech to text with gemini
-      uses: ktKongTong/gemini-action@v0.2.0
+      uses: ktKongTong/gemini-action@v0.2.1
       id: gemini-stt
       with:
         token: ${{inputs.token}}
