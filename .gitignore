@@ -31,3 +31,4 @@ next-env.d.ts
 .secrets
 fuma/node_modules
 fuma/.next
+batch.yml
