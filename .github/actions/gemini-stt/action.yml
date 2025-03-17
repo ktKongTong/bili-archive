@@ -7,6 +7,9 @@ inputs:
   bili-proxy:
     description: "bili-proxy-host"
     required: false
+  system-prompt:
+    description: "system-prompt"
+    required: false
   prompt:
     description: "prompt"
     default: |
@@ -37,9 +40,6 @@ runs:
         proxy-stream-host: ${{ inputs.bili-proxy }}
         audio: true
         audio-file-template: "output/{bvid}.mp4"
-    #    - name: set output to json
-    #      shell: bash
-    #      run: echo '${{ steps.bili.outputs.video }}' > video.json
     - name: convert to mp3
       shell: bash
       run: ffmpeg -i output/${{ steps.bili.outputs.bvid }}.mp4 -ar 16000 output/${{ steps.bili.outputs.bvid }}.mp3
@@ -57,8 +57,8 @@ runs:
         token: ${{inputs.token}}
         model: ${{inputs.model}}
         file-path: output/${{ steps.bili.outputs.bvid }}.mp3
-        prompt: |
-          ${{ inputs.prompt }}
+        prompt: ${{ inputs.prompt }}
+        system-prompt: ${{ inputs.system-prompt }}
         file-mime: audio/mp3
     - name: show result
       shell: bash

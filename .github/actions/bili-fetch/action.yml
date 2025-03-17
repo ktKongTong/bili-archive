@@ -9,6 +9,9 @@ inputs:
   bili-proxy:
     description: "bili-proxy-host"
     required: false
+  system-prompt:
+    description: "system-prompt"
+    required: false
   prompt:
     description: "prompt"
     required: false
@@ -57,6 +60,11 @@ runs:
         fallback-template: |
           filename:{{pubdate}}-{{title}}.md
           filepath:docs/{{owner.name}}
+    - id: path-normalize
+      shell: bash
+      run: |
+        filepath="${{steps.path-resolver.outputs.filepath}}"
+        filename="${{steps.path-resolver.outputs.filename}}"
     - id: check-exist
       shell: bash
       run: |
@@ -75,6 +83,7 @@ runs:
         token: ${{ inputs.token }}
         bili-proxy: ${{ inputs.bili-proxy }}
         prompt: ${{ inputs.prompt }}
+        system-prompt: ${{ inputs.system-prompt }}
         model: ${{ inputs.model }}
     - name: move to dest
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
@@ -84,9 +93,9 @@ runs:
         filename="${{steps.path-resolver.outputs.filename}}"
         echo "$filepath"
         echo "$filename"
-        mkdir -p $filepath
-        echo "${{ steps.call-stt-workflow.outputs.markdown }}" > $filepath/$filename
-        ls -l $filepath
+        mkdir -p "$filepath"
+        echo "${{ steps.call-stt-workflow.outputs.markdown }}" > "$filepath/$filename"
+        ls -l "$filepath"
     - name: commit and push
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       uses: ./.github/actions/pr-or-commit

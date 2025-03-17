@@ -23,25 +23,20 @@ cat $1 | jq -r '.title' | while read -r title; do
 
         formatted_index=$(printf "%04d" "$index")
         format_range "$index"
-        path="docs/btnews/${mapped_category}/${formatted_range}"
-        filepath="docs/btnews/${mapped_category}/${formatted_range}/${mapped_category}_${formatted_index}.md"
+        filepath="docs/btnews/${mapped_category}/${formatted_range}"
+        filename="${mapped_category}_${formatted_index}.md"
         echo "path: $filepath"
-        if [ ! -f "$filepath" ]; then
+        if [ ! -f "$filepath/$filename" ]; then
           echo "file not exist"
           echo "exist=false" >> "$GITHUB_OUTPUT"
         else
           echo "file already exist"
           echo "exist=true" >> "$GITHUB_OUTPUT"
         fi
-        echo "path=$path" >> "$GITHUB_OUTPUT"
         echo "filepath=$filepath" >> "$GITHUB_OUTPUT"
+        echo "filename=$filename" >> "$GITHUB_OUTPUT"
     else
         echo "Title format not matched: $title"
         exit 1
     fi
-done
-
-# path
-cat $1 | jq -r '.owner.name' | while read -r author; do
-
 done

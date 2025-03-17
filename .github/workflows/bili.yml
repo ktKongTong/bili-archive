@@ -7,12 +7,18 @@ on:
       prompt:
         description: "prompt"
         default: |
-          下面是一段音频，请识别为文本。不要返回额外的内容。
-          拆分为合适的段落，并适当的加上标点符号标记。
-          段落与段落之间请用两个换行符号分割，段落不宜太松散，也不宜太紧凑。
           请一定不要对原文进行较大幅度的删改、任何删改请务必使用~~~进行标识。
           此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
         required: false
+        type: string
+      system-prompt:
+        description: "system-prompt"
+        default: |
+          下面是一段音频，请识别为文本。不要返回额外的内容。
+          拆分为合适的段落，并适当的加上标点符号标记。
+          段落与段落之间请用两个换行符号分割，段落不宜太松散，也不宜太紧凑。
+        required: false
+        type: string
       model:
         description: "gemini model"
         type: choice
@@ -29,11 +35,16 @@ on:
       prompt:
         description: "prompt"
         default: |
+          请一定不要对原文进行较大幅度的删改、任何删改请务必使用~~~进行标识。
+          此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
+        required: false
+        type: string
+      system-prompt:
+        description: "system-prompt"
+        default: |
           下面是一段音频，请识别为文本。不要返回额外的内容。
           拆分为合适的段落，并适当的加上标点符号标记。
           段落与段落之间请用两个换行符号分割，段落不宜太松散，也不宜太紧凑。
-          请一定不要对原文进行较大幅度的删改、任何删改请务必使用~~~进行标识。
-          此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
         required: false
         type: string
       model:
@@ -70,6 +81,7 @@ jobs:
           token: ${{ secrets.GEMINI_TOKEN }}
           bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
           prompt: ${{ env.prompt }}
+          system-prompt: ${{ inputs.system-prompt }}
           model: ${{ env.model }}
       - name: move to dest
         run: |

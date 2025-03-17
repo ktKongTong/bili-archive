@@ -8,12 +8,24 @@ on:
       keywords:
         required: true
         description: "keywords filter"
-      prompt:
-        description: "prompt"
+      max-parallel:
+        default: 4
+        required: false
+        description: "max-parallel"
+      exec-even-exist:
+        type: 'boolean'
+        required: false
+        default: 'false'
+      system-prompt:
+        description: "system-prompt"
         default: |
           下面是一段音频，请识别为文本。不要返回额外的内容。
           拆分为合适的段落，并适当的加上标点符号标记。
           段落与段落之间请用两个换行符号分割，段落不宜太松散，也不宜太紧凑。
+        required: false
+      prompt:
+        description: "prompt"
+        default: |
           请一定不要对原文进行较大幅度的删改、任何删改请务必使用~~~进行标识。
           此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。
         required: false
@@ -28,15 +40,19 @@ on:
 env:
   mid: ${{ github.event.inputs.mid }}
   keywords: ${{ github.event.inputs.keywords }}
-  prompt: ${{ github.event.inputs.prompt || '下面是一段音频，请识别为文本。不要返回额外的内容。拆分为合适的段落，并适当的加上标点符号标记。段落与段落之间请用两个换行符号分割，段落不宜太松散，也不宜太紧凑。请一定不要对原文进行较大幅度的删改、任何删改请务必使用~~~进行标识。此外，可能其中部分内容属于不相关的广告部分，请在对应段落前后通过 `@@@` 进行标识。' }}
-  model: ${{ github.event.inputs.model || 'gemini-2.0-pro-exp-02-05' }}
+  prompt: ${{ github.event.inputs.prompt }}
+  system-prompt: ${{ github.event.inputs.system-prompt }}
+  model: ${{ github.event.inputs.model }}
+  max-parallel: ${{ github.event.inputs.max-parallel || 4 }}
+  exec-even-exist: ${{ github.event.inputs.exec-even-exist || 'false' }}
+  branch: 'batch/${{github.event.inputs.mid}}/${{github.event.inputs.keywords}}'
 jobs:
   batch-get-video:
     runs-on: ubuntu-latest
     outputs:
       videos: ${{ steps.set-result.outputs.result }}
     steps:
-      - name: get and download video
+      - name: get videos
         id: bili
         uses: ktKongTong/bili-action@v0.2.8
         with:
@@ -51,17 +67,10 @@ jobs:
           script: | 
             const bvids = "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
             const allId = bvids.split(',')
-            const length = allId.length
-            const s = Math.ceil(length/4)
-            let i = 0
-            const chunk1 = allId.slice(i * s, (++i) * s)
-            const chunk2 = allId.slice(i * s, (++i) * s)
-            const chunk3 = allId.slice(i * s, (++i) * s)
-            const chunk4 = allId.slice(i * s, (++i) * s)
-            // const chunk1 = allId.slice(0, 2)
-            // const chunk2 = allId.slice(2, 4)
-            // const chunk3 = allId.slice(4, 6)
-            // const chunk4 = allId.slice(6, 8)
+            const chunk1 = allId.filter((id, idx) => idx % 4 == 0)
+            const chunk2 = allId.filter((id, idx) => idx % 4 == 1)
+            const chunk3 = allId.filter((id, idx) => idx % 4 == 2)
+            const chunk4 = allId.filter((id, idx) => idx % 4 == 3)
             return [chunk1, chunk2, chunk3, chunk4]
       - name: Get result
         run: echo "${{steps.set-result.outputs.result}}"
@@ -70,13 +79,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          branch: 'batch/${{env.mid}}/${{env.keywords}}'
+          branch: ${{ env.branch }}
   get-video-chunk-1:
     needs: [batch-get-video]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 1
+      max-parallel: 4
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[0] }}
     steps:
@@ -88,17 +97,18 @@ jobs:
           github-token: ${{ secrets.PAT }}
           model: ${{ env.model }}
           prompt: ${{ env.prompt }}
+          system-prompt: ${{ env.system-prompt }}
           bvid: ${{ matrix.bvid }}
           bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
-          exec-even-exist: 'true'
-          branch: 'batch/${{env.mid}}/${{env.keywords}}'
+          exec-even-exist: ${{ env.exec-even-exist }}
+          branch: ${{ env.branch }}
           message: ":memo: new docs ${{ steps.bili.outputs.title }}"
   get-video-chunk-2:
-    needs: [batch-get-video]
+    needs: [batch-get-video, get-video-chunk-1]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 1
+      max-parallel: 4
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[1] }}
     steps:
@@ -110,17 +120,18 @@ jobs:
           github-token: ${{ secrets.PAT }}
           model: ${{ env.model }}
           prompt: ${{ env.prompt }}
+          system-prompt: ${{ env.system-prompt }}
           bvid: ${{ matrix.bvid }}
           bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
-          exec-even-exist: 'true'
-          branch: 'batch/${{env.mid}}/${{env.keywords}}'
+          exec-even-exist: ${{ env.exec-even-exist }}
+          branch: ${{ env.branch }}
           message: ":memo: new docs ${{ steps.bili.outputs.title }}"
   get-video-chunk-3:
-    needs: [batch-get-video]
+    needs: [batch-get-video,get-video-chunk-2]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 1
+      max-parallel: 4
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[2] }}
     steps:
@@ -132,17 +143,18 @@ jobs:
           github-token: ${{ secrets.PAT }}
           model: ${{ env.model }}
           prompt: ${{ env.prompt }}
+          system-prompt: ${{ env.system-prompt }}
           bvid: ${{ matrix.bvid }}
           bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
-          exec-even-exist: 'true'
-          branch: 'batch/${{env.mid}}/${{env.keywords}}'
+          exec-even-exist: ${{ env.exec-even-exist }}
+          branch: ${{ env.branch }}
           message: ":memo: new docs ${{ steps.bili.outputs.title }}"
   get-video-chunk-4:
-    needs: [batch-get-video]
+    needs: [batch-get-video, get-video-chunk-3]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 1
+      max-parallel: ${{ env.max-parallel }}
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[3] }}
     steps:
@@ -154,8 +166,9 @@ jobs:
           github-token: ${{ secrets.PAT }}
           model: ${{ env.model }}
           prompt: ${{ env.prompt }}
+          system-prompt: ${{ env.system-prompt }}
           bvid: ${{ matrix.bvid }}
           bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
-          exec-even-exist: 'true'
-          branch: 'batch/${{env.mid}}/${{env.keywords}}'
+          exec-even-exist: ${{ env.exec-even-exist }}
+          branch: ${{ env.branch }}
           message: ":memo: new docs ${{ steps.bili.outputs.title }}"
