@@ -78,9 +78,6 @@ jobs:
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[0] }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 'batch/${{env.mid}}/${{env.keywords}}'
-          token: ${{ secrets.PAT }}
       - name: get content
         uses: ./.github/actions/bili-fetch
         with:
@@ -103,9 +100,6 @@ jobs:
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[1] }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 'batch/${{env.mid}}/${{env.keywords}}'
-          token: ${{ secrets.PAT }}
       - name: get content
         uses: ./.github/actions/bili-fetch
         with:
@@ -128,9 +122,6 @@ jobs:
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[2] }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 'batch/${{env.mid}}/${{env.keywords}}'
-          token: ${{ secrets.PAT }}
       - name: get content
         uses: ./.github/actions/bili-fetch
         with:
