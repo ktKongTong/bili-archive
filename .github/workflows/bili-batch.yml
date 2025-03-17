@@ -65,7 +65,9 @@ jobs:
   get-video-item:
     needs: [batch-get-video]
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
+      max-parallel: 5
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos) }}
     steps:
@@ -113,3 +115,4 @@ jobs:
           author_email: ${{ github.actor }}@users.noreply.github.com
           message: ":memo: new docs ${{ steps.bili.outputs.title }}"
           add: 'docs/**/*.md'
+          pull: '--rebase --autostash'
