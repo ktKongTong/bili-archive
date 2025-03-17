@@ -77,8 +77,6 @@ jobs:
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[0] }}
     steps:
-      - name: show result
-        run: echo "current bvid ${{ matrix.bvid }}"
       - uses: actions/checkout@v4
         with:
           ref: 'batch/${{env.mid}}/${{env.keywords}}'
@@ -104,8 +102,6 @@ jobs:
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[1] }}
     steps:
-      - name: show result
-        run: echo "current bvid ${{ matrix.bvid }}"
       - uses: actions/checkout@v4
         with:
           ref: 'batch/${{env.mid}}/${{env.keywords}}'
@@ -131,8 +127,6 @@ jobs:
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[2] }}
     steps:
-      - name: show result
-        run: echo "current bvid ${{ matrix.bvid }}"
       - uses: actions/checkout@v4
         with:
           ref: 'batch/${{env.mid}}/${{env.keywords}}'
@@ -158,8 +152,6 @@ jobs:
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[3] }}
     steps:
-      - name: show result
-        run: echo "current bvid ${{ matrix.bvid }}"
       - uses: actions/checkout@v4
       - name: get content
         uses: ./.github/actions/bili-fetch

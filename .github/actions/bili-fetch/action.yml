@@ -36,8 +36,14 @@ runs:
   using: "composite"
   steps:
     - name: show result
+      shell: bash
       run: |
         echo "current bvid ${{ inputs.bvid }}"
+    - name: checkout to another branch
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.branch }}
+        token: ${{ inputs.github-token }}
     - name: get video
       id: bili
       uses: ktKongTong/bili-action@v0.2.6
@@ -52,6 +58,7 @@ runs:
           filename:{{pubdate}}-{{title}}.md
           filepath:docs/{{owner.name}}
     - id: check-exist
+      shell: bash
       run: |
         filepath="${{steps.path-resolver.outputs.filepath}}"
         filename="${{steps.path-resolver.outputs.filename}}"
@@ -71,6 +78,7 @@ runs:
         model: ${{ inputs.model }}
     - name: move to dest
       if: ${{ steps.check-exist.outputs.continue }}
+      shell: bash
       run: |
         filepath="${{steps.path-resolver.outputs.filepath}}"
         filename="${{steps.path-resolver.outputs.filename}}"
