@@ -43,7 +43,6 @@ env:
   prompt: ${{ github.event.inputs.prompt }}
   system-prompt: ${{ github.event.inputs.system-prompt }}
   model: ${{ github.event.inputs.model }}
-  max-parallel: ${{ github.event.inputs.max-parallel || 4 }}
   exec-even-exist: ${{ github.event.inputs.exec-even-exist || 'false' }}
   branch: 'batch/${{github.event.inputs.mid}}/${{github.event.inputs.keywords}}'
 jobs:
@@ -85,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 4
+      max-parallel: ${{ inputs.max-parallel }}
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[0] }}
     steps:
@@ -108,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 4
+      max-parallel: ${{ inputs.max-parallel }}
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[1] }}
     steps:
@@ -131,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: 4
+      max-parallel: ${{ inputs.max-parallel }}
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[2] }}
     steps:
@@ -154,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
-      max-parallel: ${{ env.max-parallel }}
+      max-parallel: ${{ inputs.max-parallel }}
       matrix: # maximum of 256 configurations
         bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos)[3] }}
     steps:
