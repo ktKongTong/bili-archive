@@ -51,14 +51,17 @@ jobs:
           script: | 
             const bvids = "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
             const allId = bvids.split(',')
-            // const chunk1 = allId.slice(0, 250)
-            // const chunk2 = allId.slice(250, 500)
-            // const chunk3 = allId.slice(500, 750)
-            // const chunk4 = allId.slice(750, 1000)
-            const chunk1 = allId.slice(0, 2)
-            const chunk2 = allId.slice(2, 4)
-            const chunk3 = allId.slice(4, 6)
-            const chunk4 = allId.slice(6, 8)
+            const length = allId.length
+            const s = Math.ceil(length/4)
+            let i = 0
+            const chunk1 = allId.slice(i * s, (++i) * s)
+            const chunk2 = allId.slice(i * s, (++i) * s)
+            const chunk3 = allId.slice(i * s, (++i) * s)
+            const chunk4 = allId.slice(i * s, (++i) * s)
+            // const chunk1 = allId.slice(0, 2)
+            // const chunk2 = allId.slice(2, 4)
+            // const chunk3 = allId.slice(4, 6)
+            // const chunk4 = allId.slice(6, 8)
             return [chunk1, chunk2, chunk3, chunk4]
       - name: Get result
         run: echo "${{steps.set-result.outputs.result}}"

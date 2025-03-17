@@ -37,10 +37,14 @@ runs:
         draft: false
     - name: commit and push
       if: ${{ inputs.commit == 'true' }}
-      uses: EndBug/add-and-commit@v9
+      uses: Wandalen/wretry.action@master
       with:
-        author_name: "${{ github.actor }}"
-        author_email: ${{ github.actor }}@users.noreply.github.com
-        message: ${{ inputs.message }}
-        add: ${{ inputs.path }}
-        pull: '--rebase --autostash'
+        action: EndBug/add-and-commit@v9
+        with: |
+          author_name: "${{ github.actor }}"
+          author_email: ${{ github.actor }}@users.noreply.github.com
+          message: ${{ inputs.message }}
+          add: ${{ inputs.path }}
+          pull: '--rebase --autostash'
+        attempt_limit: 3
+        attempt_delay: 2000
