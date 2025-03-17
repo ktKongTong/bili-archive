@@ -49,7 +49,7 @@ jobs:
         id: set-result
         with:
           script: | 
-            const bvids = "${{ join(toJSON(steps.bili.outputs.batch).*.bvid) }}"
+            const bvids = "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
             const chunk1 = bvids.slice(0, 255)
             // .map(it=>it.bvid)
             console.log(chunk1)
