@@ -9,7 +9,12 @@ const docs = defineCollection({
   name: "docs",
   directory: "../docs",
   include: ["**/*.mdx", "**/*.md"],
-  schema: createDocSchema,
+  schema: (z) => {
+    return {
+      ...createDocSchema(z),
+      bvid: z.string().optional(),
+    }
+  },
   transform: transformMDX,
 });
 

@@ -9,19 +9,22 @@ import {
 import { notFound } from "next/navigation";
 import { MDXContent } from "@content-collections/mdx/react";
 import defaultMdxComponents, { createRelativeLink } from "fumadocs-ui/mdx";
+import Video from '@/app/docs/[[...slug]]/video'
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
 }) {
   const params = await props.params;
-  const page = source.getPage(params.slug);
+  const slugs = params.slug?.map(it => decodeURIComponent(it));
+  const page = source.getPage(slugs);
   if (!page) notFound();
-
+  const bvid = page.data.bvid
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
+        { bvid && <Video bvid={bvid} className={"rounded-md"}/> }
         <MDXContent
           code={page.data.body}
           components={{
@@ -44,7 +47,9 @@ export async function generateMetadata(props: {
   params: Promise<{ slug?: string[] }>;
 }) {
   const params = await props.params;
-  const page = source.getPage(params.slug);
+  const slugs = params.slug?.map(it => decodeURIComponent(it));
+  const page = source.getPage(slugs);
+
   if (!page) notFound();
 
   return {
