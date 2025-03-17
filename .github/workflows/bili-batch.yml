@@ -34,7 +34,7 @@ jobs:
   batch-get-video:
     runs-on: ubuntu-latest
     outputs:
-      videos: ${{ fromJSON(steps.bili.outputs.batch) }}
+      videos: ${{ steps.bili.outputs.batch }}
     steps:
       - name: get and download video
         id: bili
@@ -46,8 +46,8 @@ jobs:
       - name: echo bvid
         id: echo
         run: |
-          echo "${{ fromJSON(steps.bili.outputs.batch) }}"
-          echo "${{ fromJSON(steps.bili.outputs.batch).*.bvid }}"
+          echo "${{ toJSON(steps.bili.outputs.batch) }}"
+          echo "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
 
   get-video-item:
     needs: [batch-get-video]
