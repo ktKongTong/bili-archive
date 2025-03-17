@@ -43,11 +43,13 @@ jobs:
           mid: ${{ env.mid }}
           keyword: ${{ env.keywords }}
           batch: true
+      - name: show result
+        run: echo "${{join(fromJSON(steps.bili.outputs.batch).*.bvid)}}"
       - uses: actions/github-script@v7
         id: set-result
         with:
           script: | 
-            const bvids = ${{ join(toJSON(steps.bili.outputs.batch).*.bvid) }}
+            const bvids = "${{ join(toJSON(steps.bili.outputs.batch).*.bvid) }}"
             const chunk1 = bvids.slice(0, 255)
             // .map(it=>it.bvid)
             console.log(chunk1)
