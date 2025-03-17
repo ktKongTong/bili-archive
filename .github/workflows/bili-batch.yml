@@ -51,12 +51,11 @@ jobs:
   get-video-item:
     needs: [batch-get-video]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos).*.bvid }}
     steps:
       - name: show result
         run: |
-          echo "${{ join(fromJSON(needs.batch-get-video.outputs.videos).*.bvid) }}"
+          echo "current bvid ${{ matrix.bvid }}"
 
-
-#    strategy:
-#      matrix:
-#        bvid: ${{ fromJSON(needs.batch-get-video.outputs.bvid) }}
