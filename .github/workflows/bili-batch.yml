@@ -46,7 +46,6 @@ jobs:
       - name: echo bvid
         id: echo
         run: |
-#          echo "${{ toJSON(steps.bili.outputs.batch) }}"
           echo "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
 
   get-video-item:
