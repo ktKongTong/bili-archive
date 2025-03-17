@@ -47,8 +47,8 @@ jobs:
         id: set-result
         with:
           script: | 
-            const videos = JSON.parse(${{ toJSON(steps.bili.outputs.batch) }})
-            const chunk1 = videos.slice(0, 255)
+            const bvids = JSON.parse(${{ toJSON(steps.bili.outputs.batch).*.bvid }})
+            const chunk1 = bvids.slice(0, 255)
             // .map(it=>it.bvid)
             console.log(chunk1)
             return chunk1
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: # maximum of 256 configurations
-        bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos).*.bvid }}
+        bvid: ${{ fromJSON(needs.batch-get-video.outputs.videos) }}
     steps:
       - name: show result
         run: |
