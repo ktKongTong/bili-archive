@@ -136,7 +136,7 @@ runs:
         echo "writing content"
         echo "${{ fromJSON(steps.stt.outputs.ai).markdown }}" > "$filepath"
         echo "show dir"
-        ls -l "$(dirname $filepath)"
+        ls -l "$(dirname "$filepath")"
     - id: gen-commit-message
       uses: ./.github/actions/format
       with:
