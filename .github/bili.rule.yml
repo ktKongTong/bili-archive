@@ -11,7 +11,7 @@ match:
           title: "睡前消息"
 #        script: .github/scripts/{{platform}}/{{video.owner.name}}.js
         template:
-          filepath: docs/btnews/{{video.title}}
+          filepath: docs/btnews/{{video.title}}.md
           prompt:
             system: |
               这是一段标题为【{{video.title}}】的视频音频，请识别对应的语言，并转换为对应文本。
@@ -26,7 +26,7 @@ match:
               ---
               此外，音频中往往会包含一部分广告。请识别，并为广告前后使用`@@@` 进行标注。不要对原文进行大幅度的修改。
 fallback:
-  filepath: docs/{{video.owner.name}}/{{video.title}}
+  filepath: docs/{{video.owner.name}}/{{video.title}}.md
   prompt:
     system: |
       这是一段标题为【{{video.title}}】的视频音频，请识别对应的语言，并转换为对应文本。进行合适的分段。

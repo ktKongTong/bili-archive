@@ -9,12 +9,12 @@ inputs:
   ai:
     description: "variable"
     required: false
-  variable-escape:
-    description: 'escape variable if need, char sequence'
+  need-escape-chars:
+    description: 'char sequence that need escape'
     required: false
     default: ''
-  escaper:
-    description: 'invalid char will be replace by escaper'
+  escape-char:
+    description: 'escape-char'
     required: false
     default: '_'
 outputs:

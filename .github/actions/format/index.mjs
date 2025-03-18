@@ -27739,6 +27739,8 @@ function render(template, scope, options) {
 const input = coreExports.getInput("variable");
 const aiInput = coreExports.getInput("ai");
 const template = coreExports.getInput("template");
+const needEscapeChars = coreExports.getInput("need-escape-chars");
+const escapeChar = coreExports.getInput("escape-char");
 const data = JSON.parse(input);
 let ai = {};
 if (aiInput) {
@@ -27748,6 +27750,55 @@ const dataToInject = {
     ai,
     video: data
 };
-
-console.log(`data, ${JSON.stringify(dataToInject)}`)
-coreExports.setOutput('result', render(template, dataToInject));
+function escapeAndReplaceLeafValues(obj, specialChars, replacementValue = "_") {
+    function escapeString(s) {
+        if (typeof s !== "string") {
+            return s;
+        }
+        let escapedString = "";
+        for (const char of s) {
+            if (specialChars.includes(char)) {
+                escapedString += replacementValue;
+            }
+            else {
+                escapedString += char;
+            }
+        }
+        return escapedString;
+    }
+    function processNode(node) {
+        if (typeof node === "object" && node !== null) {
+            if (Array.isArray(node)) {
+                return node.map(processNode);
+            }
+            else {
+                const newNode = {};
+                for (const key in node) {
+                    if (node.hasOwnProperty(key)) {
+                        newNode[key] = processNode(node[key]);
+                    }
+                }
+                return newNode;
+            }
+        }
+        else {
+            if (typeof node === "string") {
+                return escapeString(node);
+            }
+            else {
+                return node;
+            }
+        }
+    }
+    return processNode(obj);
+}
+const specialChars = needEscapeChars.split('');
+// replace special char before render
+let escapedData = dataToInject;
+try {
+    escapedData = escapeAndReplaceLeafValues(dataToInject, specialChars, escapeChar);
+}
+catch (e) {
+    coreExports.warning(`escape error, ignore it, ${e?.toString()}`);
+}
+coreExports.setOutput('result', render(template, escapedData));

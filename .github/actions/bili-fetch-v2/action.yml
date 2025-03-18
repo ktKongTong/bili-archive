@@ -69,6 +69,7 @@ runs:
       uses: ./.github/actions/format
       with:
         variable: ${{ steps.bili.outputs.video }}
+        need-escape-chars: '-；\&/'
         template: |
           ${{steps.template-loader.outputs.filepath-template}}
 #    - name: checkout to another branch
@@ -117,7 +118,6 @@ runs:
         prompt: ${{ steps.gen-prompt.outputs.result }}
         system-prompt: ${{ steps.gen-system-prompt.outputs.result }}
         model: ${{ inputs.model }}
-#    - id: merge-variable
     - id: gen-markdown
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       uses: ./.github/actions/format
@@ -148,4 +148,4 @@ runs:
         message: ${{ steps.gen-commit-message.outputs.result }}
         path: 'docs/**/*.md'
         github-token: ${{ inputs.github-token }}
-        # pr: 'true'
+        pr: 'true'
