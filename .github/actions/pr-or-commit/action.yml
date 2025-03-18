@@ -42,7 +42,7 @@ runs:
           author_name: "${{ github.actor }}"
           author_email: ${{ github.actor }}@users.noreply.github.com
           message: "${{ inputs.message }}"
-          add: ""
+          add: "${{ inputs.path }}"
           pull: '--rebase --autostash'
         attempt_limit: 3
         attempt_delay: 2000
