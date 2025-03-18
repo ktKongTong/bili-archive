@@ -1,0 +1,17 @@
+{
+  "name": "bili-archive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bundle:action:tl": "pnpm --filter=@repo/template-loader-action bundle",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "act:template-loader": "act -v -W .github/workflows/ci.yml",
+    "act:bili": "act -P image=catthehacker/ubuntu:full-22.04 -W .github/workflows/bili-v2.yml",
+    "bat": "pnpm run bundle:action:tl && pnpm run act:template-loader"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.2"
+}
