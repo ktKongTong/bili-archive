@@ -72,10 +72,10 @@ runs:
         filepath="${{steps.path-resolver.outputs.filepath}}"
         filename="${{steps.path-resolver.outputs.filename}}"
         echo "continue-if-exist: ${{inputs.exec-even-exist}}"
-        if [ ! -f "$filepath/$filename" ] then
+        if [ ! -f "$filepath/$filename" ]; then
           echo "continue; file not exist"
           echo "continue=true" >> $GITHUB_OUTPUT
-        elif [ "${{inputs.exec-even-exist}}" = "true" ] then
+        elif [ "${{inputs.exec-even-exist}}" = "true" ]; then
           echo "continue; file exist, but conitue anyway"
           echo "continue=true" >> $GITHUB_OUTPUT
         else
