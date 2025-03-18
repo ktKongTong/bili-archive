@@ -120,7 +120,7 @@ runs:
       with:
         variable: ${{ steps.bili.outputs.video }}
         ai: ${{ steps.stt.outputs.ai }}
-        template: ${{ steps.template-loader.outputs.system-prompt-template }}
+        template: ${{ steps.template-loader.outputs.markdown-template }}
     - name: move to dest
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       shell: bash

@@ -27740,10 +27740,8 @@ const input = coreExports.getInput("variable");
 const aiInput = coreExports.getInput("ai");
 const template = coreExports.getInput("template");
 const data = JSON.parse(input);
-console.log("renderrenderrender")
 console.log(`template, ${template}`)
-console.log("dididi")
-console.log(`data, ${data}`)
+console.log(`data, ${JSON.stringify(data)}`)
 let ai = {};
 if (aiInput) {
     ai = JSON.parse(aiInput);
@@ -27752,4 +27750,6 @@ const dataToInject = {
     ai,
     video: data
 };
+
+console.log(`data, ${JSON.stringify(dataToInject)}`)
 coreExports.setOutput('result', render(template, dataToInject));
