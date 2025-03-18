@@ -27740,8 +27740,6 @@ const input = coreExports.getInput("variable");
 const aiInput = coreExports.getInput("ai");
 const template = coreExports.getInput("template");
 const data = JSON.parse(input);
-console.log(`template, ${template}`)
-console.log(`data, ${JSON.stringify(data)}`)
 let ai = {};
 if (aiInput) {
     ai = JSON.parse(aiInput);

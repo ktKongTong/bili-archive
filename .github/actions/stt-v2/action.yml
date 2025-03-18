@@ -19,9 +19,9 @@ inputs:
     description: "gemini model"
     required: true
 outputs:
-  markdown:
-    description: markdown
-    value: ${{ steps.final-output.outputs.markdown }}
+  ai:
+    description: ai
+    value: ${{ steps.final-output.outputs.ai }}
 runs:
   using: "composite"
   steps:

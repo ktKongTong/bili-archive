@@ -69,7 +69,8 @@ runs:
       uses: ./.github/actions/format
       with:
         variable: ${{ steps.bili.outputs.video }}
-        template: ${{steps.template-loader.outputs.filepath-template}}
+        template: |
+          ${{steps.template-loader.outputs.filepath-template}}
 #    - name: checkout to another branch
 #      uses: actions/checkout@v4
 #      with:
@@ -96,13 +97,15 @@ runs:
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       with:
         variable: ${{ steps.bili.outputs.video }}
-        template: ${{steps.template-loader.outputs.prompt-template}}
+        template: |
+          ${{steps.template-loader.outputs.prompt-template}}
     - id: gen-system-prompt
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       uses: ./.github/actions/format
       with:
         variable: ${{ steps.bili.outputs.video }}
-        template: ${{steps.template-loader.outputs.system-prompt-template}}
+        template: |
+          ${{steps.template-loader.outputs.system-prompt-template}}
       # (download audio file) ai stt
     - id: stt
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
@@ -116,11 +119,13 @@ runs:
         model: ${{ inputs.model }}
 #    - id: merge-variable
     - id: gen-markdown
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
       uses: ./.github/actions/format
       with:
         variable: ${{ steps.bili.outputs.video }}
         ai: ${{ steps.stt.outputs.ai }}
-        template: ${{ steps.template-loader.outputs.markdown-template }}
+        template: |
+          ${{ steps.template-loader.outputs.markdown-template }}
     - name: move to dest
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       shell: bash
@@ -143,4 +148,4 @@ runs:
         message: ${{ steps.gen-commit-message.outputs.result }}
         path: 'docs/**/*.md'
         github-token: ${{ inputs.github-token }}
-        pr: 'true'
+        # pr: 'true'
