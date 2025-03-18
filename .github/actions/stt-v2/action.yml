@@ -1,4 +1,4 @@
-name: gemini-STT
+name: gemini-STT-v2
 inputs:
   bvid:
     description: "Bilibili bvid"
@@ -59,8 +59,8 @@ runs:
       id: final-output
       shell: bash
       run: |
-        echo 'markdown<<EOF' >> $GITHUB_OUTPUT
-        echo '${{steps.gemini-stt.outputs.output}}' >> $GITHUB_OUTPUT
+        echo 'ai<<EOF' >> $GITHUB_OUTPUT
+        echo '{"markdown":"${{steps.gemini-stt.outputs.output}}"}' >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
     - name: clean file
       shell: bash

@@ -1,0 +1,26 @@
+name: format-action
+inputs:
+  template:
+    description: "format template"
+    required: true
+  variable:
+    description: "variable to render with format template"
+    required: true
+  ai:
+    description: "variable"
+    required: false
+  variable-escape:
+    description: 'escape variable if need, char sequence'
+    required: false
+    default: ''
+  escaper:
+    description: 'invalid char will be replace by escaper'
+    required: false
+    default: '_'
+outputs:
+  result:
+    description: 'format result'
+#    value: ${{ steps.final-output.outputs.result }}
+runs:
+  using: node20
+  main: index.mjs

@@ -1,0 +1,63 @@
+name: bili-v2
+on:
+  workflow_dispatch:
+    inputs:
+      bvid:
+        required: false
+        description: "bvid"
+      mid:
+        required: true
+        description: "Bilibili member id"
+      keywords:
+        required: true
+        description: "keywords filter"
+      exec-even-exist:
+        type: 'boolean'
+        required: false
+        default: 'false'
+      system-prompt:
+        description: "system-prompt"
+        required: false
+      prompt:
+        description: "prompt"
+        required: false
+      model:
+        description: "gemini model"
+        type: choice
+        default: "gemini-2.0-flash"
+        options:
+          - "gemini-2.0-pro-exp-02-05"
+          - "gemini-2.0-flash"
+
+env:
+  bvid: ${{github.event.inputs.bvid }}
+  mid: ${{ github.event.inputs.mid }}
+  keywords: ${{ github.event.inputs.keywords }}
+  prompt: ${{ github.event.inputs.prompt }}
+  system-prompt: ${{ github.event.inputs.system-prompt }}
+  model: ${{ github.event.inputs.model }}
+  exec-even-exist: ${{ github.event.inputs.exec-even-exist }}
+  branch: 'fetch/${{inputs.bvid}}'
+jobs:
+  batch-get-video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get videos
+        id: bili
+        uses: ktKongTong/bili-action@v0.2.10
+        with:
+          bvid: ${{ env.bvid }}
+      - uses: actions/checkout@v4
+      - name: get content
+        uses: ./.github/actions/bili-fetch-v2
+        with:
+          token: ${{ secrets.GEMINI_TOKEN }}
+          github-token: ${{ secrets.PAT }}
+          model: ${{ env.model }}
+          bvid: ${{ env.bvid }}
+          bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
+          exec-even-exist: ${{ env.exec-even-exist }}
+          branch: ${{ env.branch }}
+          prompt-template: ${{ env.prompt }}
+          system-prompt-template: ${{ env.system-prompt }}
+          commit-message-template: ":memo: new docs ${{ steps.bili.outputs.title }}"

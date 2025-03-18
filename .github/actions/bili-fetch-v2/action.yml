@@ -1,0 +1,145 @@
+name: bili-fetch-v2
+inputs:
+  bvid:
+    description: "Bilibili bvid"
+    required: true
+  token:
+    description: "gemini-token"
+    required: true
+  bili-proxy:
+    description: "bili-proxy-host"
+    required: false
+  model:
+    description: "gemini model"
+    required: true
+  github-token:
+    description: "github-token"
+    required: true
+  exec-even-exist:
+    description: "should continue if exist"
+    type: 'boolean'
+    required: true
+  branch:
+    description: "branch to commit or pr"
+    required: true
+  context:
+    description: "more context, like channel info"
+    required: false
+  path-template:
+    description: "file path template"
+    required: false
+  system-prompt-template:
+    description: "system prompt template"
+    required: false
+  prompt-template:
+    description: "prompt template"
+    required: false
+  commit-message-template:
+    description: "commit message template"
+    required: false
+
+outputs:
+  created:
+    description: new file ready to commit
+    value: ${{ steps.check-exist.outputs.continue }}
+runs:
+  using: "composite"
+  steps:
+    - name: show result
+      shell: bash
+      run: echo "current bvid ${{ inputs.bvid }}"
+    - name: get video
+      id: bili
+      uses: ktKongTong/bili-action@v0.2.10
+      with:
+        bvid: ${{ inputs.bvid }}
+    - id: template-loader
+      uses: ./.github/actions/template-loader
+      with:
+        variable: ${{steps.bili.outputs.video }}
+    - name: show template result
+      run: |
+        echo "path: ${{steps.template-loader.outputs.filepath-template}}"
+        echo "markdown: ${{steps.template-loader.outputs.markdown-template}}"
+        echo "commit-message: ${{steps.template-loader.outputs.commit-message-template}}"
+        echo "prompt: ${{steps.template-loader.outputs.prompt-template}}"
+        echo "system-prompt: ${{steps.template-loader.outputs.system-prompt-template }}"
+    - id: path-resolver
+      uses: ./.github/actions/format
+      with:
+        variable: ${{ steps.bili.outputs.video }}
+        template: ${{steps.template-loader.outputs.filepath-template}}
+#    - name: checkout to another branch
+#      uses: actions/checkout@v4
+#      with:
+#        ref: ${{ inputs.branch }}
+#        token: ${{ inputs.github-token }}
+    - id: check-exist
+      shell: bash
+      run: |
+        filepath="${{steps.path-resolver.outputs.result }}"
+        echo "continue-if-exist: ${{inputs.exec-even-exist}}"
+        echo "filepath:$filepath"
+        if [ ! -f "$filepath" ]; then
+          echo "continue; file not exist"
+          echo "continue=true" >> $GITHUB_OUTPUT
+        elif [ "${{inputs.exec-even-exist}}" = "true" ]; then
+          echo "continue; file exist, but conitue anyway"
+          echo "continue=true" >> $GITHUB_OUTPUT
+        else
+          echo "skip; file exist"
+          echo "continue=false" >> $GITHUB_OUTPUT
+        fi
+    - id: gen-prompt
+      uses: ./.github/actions/format
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
+      with:
+        variable: ${{ steps.bili.outputs.video }}
+        template: ${{steps.template-loader.outputs.prompt-template}}
+    - id: gen-system-prompt
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
+      uses: ./.github/actions/format
+      with:
+        variable: ${{ steps.bili.outputs.video }}
+        template: ${{steps.template-loader.outputs.system-prompt-template}}
+      # (download audio file) ai stt
+    - id: stt
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
+      uses: ./.github/actions/stt-v2
+      with:
+        bvid: ${{ steps.bili.outputs.bvid }}
+        token: ${{ inputs.token }}
+        bili-proxy: ${{ inputs.bili-proxy }}
+        prompt: ${{ steps.gen-prompt.outputs.result }}
+        system-prompt: ${{ steps.gen-system-prompt.outputs.result }}
+        model: ${{ inputs.model }}
+#    - id: merge-variable
+    - id: gen-markdown
+      uses: ./.github/actions/format
+      with:
+        variable: ${{ steps.bili.outputs.video }}
+        ai: ${{ steps.stt.outputs.ai }}
+        template: ${{ steps.template-loader.outputs.system-prompt-template }}
+    - name: move to dest
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
+      shell: bash
+      run: |
+        filepath="${{ steps.path-resolver.outputs.result }}"
+        echo "filename:$filepath"
+        mkdir -p "$(dirname $filepath)"
+        echo "${{ fromJSON(steps.stt.outputs.ai).markdown }}" > "$filepath"
+        ls -l "$filepath"
+    - id: gen-commit-message
+      uses: ./.github/actions/format
+      with:
+        variable: ${{ steps.bili.outputs.video }}
+        template: ${{steps.template-loader.outputs.commit-message-template}}
+    - name: commit and push
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
+      uses: ./.github/actions/pr-or-commit
+      with:
+        branch: ${{ inputs.branch }}
+        message: ${{ steps.gen-commit-message.outputs.result }}
+        path: 'docs/**/*.md'
+        github-token: ${{ inputs.github-token }}
+        pr: 'true'
