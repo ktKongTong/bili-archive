@@ -133,8 +133,10 @@ runs:
         filepath="${{ steps.path-resolver.outputs.result }}"
         echo "filename:$filepath"
         mkdir -p "$(dirname $filepath)"
+        echo "writeing content"
         echo "${{ fromJSON(steps.stt.outputs.ai).markdown }}" > "$filepath"
-        ls -l "$filepath"
+        echo "show dir"
+        ls -l "$(dirname $filepath)"
     - id: gen-commit-message
       uses: ./.github/actions/format
       with:

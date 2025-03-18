@@ -39,6 +39,8 @@ fallback:
     date: {{ video.pubdate }}
     ---
     {{ai.markdown}}
+  commit-message: |
+    new docs: {{ video.title }}
 # load config
 # match rule
 
