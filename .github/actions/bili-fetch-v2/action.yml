@@ -135,7 +135,7 @@ runs:
         echo "create dir: "$path""
         mkdir -p "$path"
         echo "writing content to "$filepath""
-        echo "${{ fromJSON(steps.stt.outputs.ai).markdown }}" > "$filepath"
+        echo "${{ steps.gen-markdown.outputs.result }}" > "$filepath"
         echo "show dir: "$path""
         ls -l "$path"
     - id: gen-commit-message
