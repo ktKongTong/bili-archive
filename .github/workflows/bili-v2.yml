@@ -3,13 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       bvid:
-        required: false
+        required: true
         description: "bvid"
       mid:
-        required: true
+        required: false
         description: "Bilibili member id"
       keywords:
-        required: true
+        required: false
         description: "keywords filter"
       exec-even-exist:
         type: 'boolean'

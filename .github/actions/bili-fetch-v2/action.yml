@@ -58,6 +58,7 @@ runs:
       with:
         variable: ${{steps.bili.outputs.video }}
     - name: show template result
+      shell: bash
       run: |
         echo "path: ${{steps.template-loader.outputs.filepath-template}}"
         echo "markdown: ${{steps.template-loader.outputs.markdown-template}}"
