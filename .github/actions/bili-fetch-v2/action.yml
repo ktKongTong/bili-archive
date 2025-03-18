@@ -131,9 +131,9 @@ runs:
       shell: bash
       run: |
         filepath="${{ steps.path-resolver.outputs.result }}"
-        echo "filename:$filepath"
-        mkdir -p "$(dirname $filepath)"
-        echo "writeing content"
+        echo "create dir: $(dirname "$filepath")"
+        mkdir -p "$(dirname "$filepath")"
+        echo "writing content"
         echo "${{ fromJSON(steps.stt.outputs.ai).markdown }}" > "$filepath"
         echo "show dir"
         ls -l "$(dirname $filepath)"
