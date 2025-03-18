@@ -1,9 +1,8 @@
 name: CI template-loader
 on:
-  workflow_dispatch:
-    inputs:
-      bvid:
-        description: "Bilibili bvid"
+  push:
+    branches:
+      - 'main'
 env:
   bvid: BV1BpXjY2EP2
 jobs:

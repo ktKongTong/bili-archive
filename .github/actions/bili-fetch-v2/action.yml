@@ -22,6 +22,9 @@ inputs:
   branch:
     description: "branch to commit or pr"
     required: true
+  type:
+    description: "pr or commit"
+    required: true
   context:
     description: "more context, like channel info"
     required: false
@@ -72,11 +75,11 @@ runs:
         need-escape-chars: '-；\&/'
         template: |
           ${{steps.template-loader.outputs.filepath-template}}
-#    - name: checkout to another branch
-#      uses: actions/checkout@v4
-#      with:
-#        ref: ${{ inputs.branch }}
-#        token: ${{ inputs.github-token }}
+    - name: checkout to another branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.branch }}
+        token: ${{ inputs.github-token }}
     - id: check-exist
       shell: bash
       run: |
@@ -151,4 +154,4 @@ runs:
         message: ${{ steps.gen-commit-message.outputs.result }}
         path: 'docs/**/*.md'
         github-token: ${{ inputs.github-token }}
-        pr: 'true'
+        type: ${{ inputs.type }}

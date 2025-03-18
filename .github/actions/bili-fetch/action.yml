@@ -102,4 +102,4 @@ runs:
         message: ${{ inputs.message }}
         path: 'docs/**/*.md'
         github-token: ${{ inputs.github-token }}
-        commit: 'true'
+        type: 'commit'

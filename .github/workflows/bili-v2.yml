@@ -61,3 +61,4 @@ jobs:
           prompt-template: ${{ env.prompt }}
           system-prompt-template: ${{ env.system-prompt }}
           commit-message-template: ":memo: new docs ${{ steps.bili.outputs.title }}"
+          type: 'pr'
