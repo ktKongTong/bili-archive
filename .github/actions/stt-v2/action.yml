@@ -59,12 +59,15 @@ runs:
       id: final-output
       shell: bash
       run: |
+        echo "${{steps.gemini-stt.outputs.output}}" > tmp.md
+        cat tmp.md | jq -sR '{markdown: .}' > tmp.json
         echo 'ai<<EOF' >> $GITHUB_OUTPUT
-        echo '{"markdown":"${{steps.gemini-stt.outputs.output}}"}' >> $GITHUB_OUTPUT
+        cat tmp.json >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
     - name: clean file
       shell: bash
       run: |
+        rm -f tmp.json
         rm -f video.json
         rm -f tmp.md
         rm -f output.md
