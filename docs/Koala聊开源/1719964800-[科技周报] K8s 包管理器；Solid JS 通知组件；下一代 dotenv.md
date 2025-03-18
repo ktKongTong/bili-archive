@@ -1,5 +1,5 @@
 ---
-title: [科技周报] K8s 包管理器；Solid JS 通知组件；下一代 dotenv
+title: "[科技周报] K8s 包管理器；Solid JS 通知组件；下一代 dotenv"
 description: 了解科技资讯、把握行业脉搏。每周快速浏览 Hacker News 精选。本期 Hacker Newsletter 地址：https://mailchi.mp/hackernewsletter/706
 tag: []
 date: 1719964800

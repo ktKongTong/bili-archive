@@ -1,5 +1,5 @@
 ---
-title: [科技周报] 用代码设计复杂架构图；serverless 结合 AI 生成代码；纸张的未来已来
+title: "[科技周报] 用代码设计复杂架构图；serverless 结合 AI 生成代码；纸张的未来已来"
 description: 了解科技资讯、把握行业脉搏。每周快速浏览 Hacker News 精选。本期 Hacker Newsletter 地址：https://mailchi.mp/hackernewsletter/715
 tag: []
 date: 1725765499

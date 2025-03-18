@@ -1,5 +1,5 @@
 ---
-title: [科技周报] Anthropic 开源 AI 集成框架；基于 S3 的分布式 MySQL；智能化交互式图像编辑
+title: "[科技周报] Anthropic 开源 AI 集成框架；基于 S3 的分布式 MySQL；智能化交互式图像编辑"
 description: 了解科技资讯、把握行业脉搏。每周快速浏览 Hacker News 精选。本期 Hacker Newsletter 地址：https://www.daemonology.net/hn-daily/
 tag: []
 date: 1733022845

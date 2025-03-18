@@ -1,5 +1,5 @@
 ---
-title: [科技周报] ChatGPT 将能够与桌面端 App 交互；定位和优化 React 性能问题的工具；为 AI 赋能浏览器操作
+title: "[科技周报] ChatGPT 将能够与桌面端 App 交互；定位和优化 React 性能问题的工具；为 AI 赋能浏览器操作"
 description: 了解科技资讯、把握行业脉搏。每周快速浏览 Hacker News 精选。本期 Hacker Newsletter 地址：https://buttondown.com/hacker-newsletter/archive/hacker-newsletter-722/
 tag: []
 date: 1731817098

@@ -1,5 +1,5 @@
 ---
-title: [科技周报] 高效、安全的轻量级操作系统；OpenAI 开源轻量级 Agent 编排框架；Claude 开源 AI 数据可视化示例
+title: "[科技周报] 高效、安全的轻量级操作系统；OpenAI 开源轻量级 Agent 编排框架；Claude 开源 AI 数据可视化示例"
 description: 了解科技资讯、把握行业脉搏。每周快速浏览 Hacker News 精选。本期 Hacker Newsletter 地址：https://www.daemonology.net/hn-daily/
 tag: []
 date: 1729396015
