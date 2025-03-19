@@ -8,9 +8,15 @@ on:
       keywords:
         required: true
         description: "keywords filter"
+      slice-bvid:
+        required: false
+        description: "all bvid(sort by pubdate) before slice-bvid will be ignored(include slice-bvid)"
+      limit:
+        default: 500
+        required: false
+        description: "limit, default 500, max 1000"
       max-parallel:
         default: 4
-        type: number
         required: false
         description: "max-parallel"
       exec-even-exist:
@@ -18,7 +24,7 @@ on:
         required: false
         default: 'false'
       model:
-        description: "gemini model"
+        description: "stt model, currently only support gemini, which is cheap(free for most case), fast and good enough for such task"
         type: choice
         default: "gemini-2.0-flash"
         options:
@@ -59,14 +65,19 @@ jobs:
         with:
           script: |
             const bvids = "${{ join(fromJSON(steps.bili.outputs.batch).*.bvid) }}"
-            const allId = bvids.split(',')
+            let allId = bvids.split(',')
+            allId = allId.slice(allId.indexOf("${{ inputs.slice-bvid}}") + 1)
+            allId = allId.slice(0, ${{ fromJSON(inputs.limit) }})
+            const lastId = allId[allId.length - 1]
             const chunk1 = allId.filter((id, idx) => idx % 4 == 0)
             const chunk2 = allId.filter((id, idx) => idx % 4 == 1)
             const chunk3 = allId.filter((id, idx) => idx % 4 == 2)
             const chunk4 = allId.filter((id, idx) => idx % 4 == 3)
-            return [chunk1, chunk2, chunk3, chunk4]
+            return [chunk1, chunk2, chunk3, chunk4, allId, lastId]
       - name: Get result
         run: echo "${{steps.set-result.outputs.result}}"
+#      - name: echo summary
+#        run: |
       - name: create-branch
         uses: peterjgrainger/action-create-branch@v2.2.0
         env:
