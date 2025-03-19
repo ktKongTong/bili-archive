@@ -72,10 +72,11 @@ runs:
       uses: ./.github/actions/format
       with:
         variable: ${{ steps.bili.outputs.video }}
-        need-escape-chars: '-；\&/'
+        need-escape-chars: '-；\&/ *'
         template: |
           ${{steps.template-loader.outputs.filepath-template}}
     - name: checkout to another branch
+      if: ${{ inputs.type=='commit' }}
       uses: actions/checkout@v4
       with:
         ref: ${{ inputs.branch }}
