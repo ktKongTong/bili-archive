@@ -4,6 +4,7 @@ inputs:
     required: false
     # pr or commit
     default: 'none'
+    description: 'action type, pr or commit'
   message:
     description: "commit message"
   path:
