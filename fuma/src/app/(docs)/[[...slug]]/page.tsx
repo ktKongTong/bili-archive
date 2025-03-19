@@ -6,17 +6,21 @@ import {
   DocsTitle,
   DocsDescription,
 } from "fumadocs-ui/page";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from 'next/navigation'
 import { MDXContent } from "@content-collections/mdx/react";
 import defaultMdxComponents, { createRelativeLink } from "fumadocs-ui/mdx";
-import Video from '@/app/docs/[[...slug]]/video'
+import Video from '@/app/(docs)/[[...slug]]/video'
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
 }) {
   const params = await props.params;
   const slugs = params.slug?.map(it => decodeURIComponent(it));
-  const page = source.getPage(slugs);
+  let page = source.getPage(slugs);
+  if(slugs == undefined || slugs.length == 0) {
+    page = source.getPages()?.[0]
+    return redirect(encodeURI(page.url));
+  }
   if (!page) notFound();
   const bvid = page.data.bvid
   return (
@@ -48,8 +52,10 @@ export async function generateMetadata(props: {
 }) {
   const params = await props.params;
   const slugs = params.slug?.map(it => decodeURIComponent(it));
-  const page = source.getPage(slugs);
-
+  let page = source.getPage(slugs);
+  if(slugs == undefined || slugs.length == 0) {
+    page = source.getPages()?.[0]
+  }
   if (!page) notFound();
 
   return {
