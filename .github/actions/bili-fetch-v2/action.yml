@@ -129,6 +129,14 @@ runs:
         ai: ${{ steps.stt.outputs.ai }}
         template: |
           ${{ steps.template-loader.outputs.markdown-template }}
+    - name: add to file
+      if: ${{ steps.check-exist.outputs.continue == 'true' }}
+      shell: bash
+      run: |
+        echo "writing content to tmp.md"
+        cat <<EOF > tmp.md
+        ${{ steps.gen-markdown.outputs.result }}
+        EOF
     - name: move to dest
       if: ${{ steps.check-exist.outputs.continue == 'true' }}
       shell: bash
@@ -137,8 +145,8 @@ runs:
         path=$(dirname "$filepath")
         echo "create dir: "$path""
         mkdir -p "$path"
-        echo "writing content to "$filepath""
-        echo "${{ steps.gen-markdown.outputs.result }}" > "$filepath"
+        cat tmp.md > "$filepath"
+        rm -f tmp.md
         echo "show dir: "$path""
         ls -l "$path"
     - id: gen-commit-message
