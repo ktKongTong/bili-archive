@@ -11,6 +11,7 @@ import { MDXContent } from "@content-collections/mdx/react";
 import defaultMdxComponents, { createRelativeLink } from "fumadocs-ui/mdx";
 import Video from '@/app/(docs)/[[...slug]]/video'
 import { Comments } from '@/comment/comment'
+import { config } from '../../../../config'
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -25,22 +26,36 @@ export default async function Page(props: {
   if (!page) notFound();
   const bvid = page.data.bvid
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage
+      editOnGithub={(config.github && config.github?.editable != false) ? {
+        owner: config.github.owner,
+        repo: config.github.repo,
+        sha: config.github.sha,
+        path: `${config.docBasePath}/${page.file.path}`,
+      } : undefined }
+      toc={page.data.toc}
+      full={page.data.full}
+      footer={{
+        enabled: true,
+        component: <>
+          {config.enableComment && <Comments page={page.data.bvid!}/>}
+        </>
+      }}
+
+    >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        { bvid && <Video bvid={bvid} className={"rounded-md m-3"}/> }
+        { bvid && <Video bvid={bvid} className={"rounded-md m-3"} iframeClassname={"rounded-md"}/> }
         <MDXContent
           code={page.data.body}
           components={{
             ...defaultMdxComponents,
-            // this allows you to link to other pages with relative file paths
             a: createRelativeLink(source, page),
-            // you can add other MDX components here
           }}
         />
-        <Comments page={page.data.bvid!}/>
       </DocsBody>
+
     </DocsPage>
   );
 }

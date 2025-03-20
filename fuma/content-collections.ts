@@ -5,6 +5,7 @@ import {
   transformMDX,
 } from "@fumadocs/content-collections/configuration";
 
+
 const docs = defineCollection({
   name: "docs",
   directory: "../docs",
@@ -12,6 +13,7 @@ const docs = defineCollection({
   schema: (z) => {
     return {
       ...createDocSchema(z),
+      date: z.coerce.number(),
       bvid: z.string().optional(),
     }
   },
@@ -26,10 +28,10 @@ const metas = defineCollection({
   schema: (z) => {
     return {
       ...createMetaSchema(z),
-      ai: z.object({
-        cot: z.boolean().optional().default(false),
-        rewrite: z.boolean().optional().default(false),
-      }).optional(),
+      // ai: z.object({
+      //   cot: z.boolean().optional().default(false),
+      //   rewrite: z.boolean().optional().default(false),
+      // }).optional(),
     }
   },
 });

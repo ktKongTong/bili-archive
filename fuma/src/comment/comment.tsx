@@ -3,8 +3,6 @@ import { Comments as CommentsInternal, CommentsProps } from '@fuma-comment/react
 import { createUploadThingStorage } from "@fuma-comment/react/uploadthing";
 import { authClient } from '@/lib/auth-client'
 
-// import { signIn } from '@/lib/auth-client'
-
 const signIn = () => {
   void authClient.signIn.social({
     provider: "github",
