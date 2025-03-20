@@ -10,6 +10,7 @@ import { notFound, redirect } from 'next/navigation'
 import { MDXContent } from "@content-collections/mdx/react";
 import defaultMdxComponents, { createRelativeLink } from "fumadocs-ui/mdx";
 import Video from '@/app/(docs)/[[...slug]]/video'
+import { Comments } from '@/comment/comment'
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -28,7 +29,7 @@ export default async function Page(props: {
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        { bvid && <Video bvid={bvid} className={"rounded-md"}/> }
+        { bvid && <Video bvid={bvid} className={"rounded-md m-3"}/> }
         <MDXContent
           code={page.data.body}
           components={{
@@ -38,6 +39,7 @@ export default async function Page(props: {
             // you can add other MDX components here
           }}
         />
+        <Comments page={page.data.bvid!}/>
       </DocsBody>
     </DocsPage>
   );

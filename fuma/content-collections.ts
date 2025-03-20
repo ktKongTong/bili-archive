@@ -23,7 +23,15 @@ const metas = defineCollection({
   directory: "../docs",
   include: "**/meta.json",
   parser: "json",
-  schema: createMetaSchema,
+  schema: (z) => {
+    return {
+      ...createMetaSchema(z),
+      ai: z.object({
+        cot: z.boolean().optional().default(false),
+        rewrite: z.boolean().optional().default(false),
+      }).optional(),
+    }
+  },
 });
 
 export default defineConfig({
