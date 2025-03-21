@@ -6,14 +6,14 @@ watch:
         post:
           mid: 316568752
           keywords: 睡前消息
-          script: '../../scripts/bilibili/马督工.mjs'
+          script: '.github/scripts/scripts/bilibili/马督工.mjs'
           filepath: docs/btnews/{{title}}.md
 
 match:
   - id: Koala聊开源-科技周报
     platform:
       bilibili:
-        script: ../../scripts/bilibili/{{video.owner.name}}.mjs
+        script: '.github/scripts/bilibili/{{video.owner.name}}.mjs'
         condition:
           owner.mid: 489667127
           title: "科技周报"
@@ -34,7 +34,7 @@ match:
   - id: 睡前消息
     platform:
       bilibili:
-        script: ../../scripts/bilibili/{{video.owner.name}}.mjs
+        script: .github/scripts/bilibili/{{video.owner.name}}.mjs
         condition:
           owner.name: "马督工"
           title: "睡前消息"

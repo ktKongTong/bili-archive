@@ -1,9 +1,5 @@
 import { ResultTemplate, Template } from './type.js'
 
-// type
-//
-
-
 export const modifyTemplate = (template: ResultTemplate, cur?: Template) => {
   let modified = false
   if(!template.prompt.system && typeof cur?.prompt?.system === 'string') {

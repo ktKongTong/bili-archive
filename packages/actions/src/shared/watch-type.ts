@@ -1,4 +1,3 @@
-
 export type PostWatchRule = {
   filepath: string,
   mid: string,
@@ -6,12 +5,11 @@ export type PostWatchRule = {
   title?: string,
 }
 
+
 export type WatchRule = {
-  id: string
+  id?: string
   platform: {
-    // if match trigger event
     bilibili?: {
-      // check file if exist
       post?: PostWatchRule,
       series?: {
         mid: string,
@@ -28,8 +26,6 @@ export type WatchRule = {
     },
   }
 }
-
-
 
 export type Rule = {
   watch: WatchRule[]

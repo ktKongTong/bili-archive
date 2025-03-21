@@ -2,9 +2,7 @@ import * as core from "@actions/core";
 import { render } from 'micromustache'
 
 const input = core.getInput("variable");
-
 const aiInput = core.getInput("ai")
-
 const template = core.getInput("template")
 const needEscapeChars = core.getInput("need-escape-chars")
 const escapeChar = core.getInput("escape-char")

@@ -34167,8 +34167,6 @@ const testRule = (matchRule, data, matcher = undefined, cur = "and") => {
     }
 };
 
-// type
-//
 const modifyTemplate = (template, cur) => {
     let modified = false;
     if (!template.prompt.system && typeof cur?.prompt?.system === 'string') {

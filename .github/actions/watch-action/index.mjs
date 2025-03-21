@@ -28,6 +28,7 @@ import require$$6 from 'string_decoder';
 import require$$0$9 from 'diagnostics_channel';
 import require$$2$2 from 'child_process';
 import require$$6$1 from 'timers';
+import path from 'node:path';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -34092,7 +34093,7 @@ function parse(src, reviver, options) {
 
 const getRecentPost = async (param) => {
     if (param.mid) {
-        const res = await fetch(`https://api.bilibili.com/x/series/recArchivesByKeywords?mid=${param.mid}&keywords=${param.title ?? ''}&ps=100`)
+        const res = await fetch(`https://api.bilibili.com/x/series/recArchivesByKeywords?mid=${param.mid}&keywords=${param.keywords ?? ''}&ps=100`)
             .then(res => res.json());
         return res;
     }
@@ -34589,8 +34590,6 @@ function render(template, scope, options) {
     return renderer.render(scope);
 }
 
-// type
-//
 const modifyTemplate = (template, cur) => {
     let modified = false;
     if (!template.prompt.system && typeof cur?.prompt?.system === 'string') {
@@ -34638,9 +34637,11 @@ const handlePostRule = async (postRule) => {
         coreExports.debug(`load-watch-script: ${postRule.script}`);
         if (postRule.script) {
             const script = render(postRule.script, v.data);
-            coreExports.debug(`loading-watch-script: ${script}`);
-            const { watch } = await import(script);
-            coreExports.debug(`loaded-watch-script, ${script}`);
+            const scriptPath = path.join(process.cwd(), script);
+            coreExports.debug(`loading-watch-script: ${scriptPath}`);
+            const { watch } = await import(scriptPath);
+            console.log("loaded!!", scriptPath);
+            coreExports.debug(`loaded-watch-script, ${scriptPath}`);
             if (watch && typeof watch === 'function') {
                 const { filepath: fp, template } = watch(v.data);
                 if (fp && typeof fp === 'string') {

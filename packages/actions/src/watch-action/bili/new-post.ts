@@ -5,6 +5,7 @@ import { render } from 'micromustache'
 import { modifyTemplate } from '../../shared/template.js'
 import { format } from '../../shared/format.js'
 import fs from 'fs'
+import path from 'node:path'
 
 const createPreset = () => ({
   filepath: undefined,
@@ -22,12 +23,13 @@ export const handlePostRule = async (postRule: PostWatchRule) => {
   let filepath = undefined
   if(v && v.data) {
     const video = v.data.archives[0]
-    core.debug(`load-watch-script: ${postRule.script}`)
+    core.debug(`load-watch-script-template: ${postRule.script}`)
     if(postRule.script) {
       const script = render(postRule.script, v.data)
-      core.debug(`loading-watch-script: ${script}`)
-      const {watch} = await import(script)
-      core.debug(`loaded-watch-script, ${script}`)
+      const scriptPath = path.join(process.cwd(), script)
+      core.debug(`loading-watch-script: ${scriptPath}`)
+      const {watch} = await import(scriptPath)
+      core.debug(`loaded-watch-script, ${scriptPath}`)
       if(watch && typeof watch === 'function') {
         const { filepath: fp, template } = watch(v.data)
         if (fp && typeof fp === 'string') {
