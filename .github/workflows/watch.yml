@@ -19,18 +19,18 @@ jobs:
           echo 'Watch result: ${{ steps.watch.outputs.result }}'
   fetch:
     needs: watch
-#    runs-on: ubuntu-latest
     strategy:
       matrix:
-        payload: ${{ needs.watch.outputs.result.*.payload }}
-#    steps:
-#      - name: show matrix
-#        run: echo "matrix ${{toJSON(matrix.payload)}}"
-    uses: ./.github/workflows/bili-v2.yml
-    with:
-      exec-even-exist: false
-      bvid: ${{ fromJSON(matrix.payload).bvid }}
-      filepath-template: ${{ fromJSON(matrix.payload).presetFilepathTemplate }}
-      markdown-template: ${{ fromJSON(matrix.payload).presetMarkdownTemplate }}
-      prompt-template: ${{ fromJSON(matrix.payload).presetPromptTemplate }}
-      system-prompt-template: ${{ fromJSON(matrix.payload).presetSystemPromptTemplate }}
+        event: ${{ fromJSON(needs.watch.outputs.result) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: show matrix
+        run: echo 'matrix ${{toJSON(matrix.event)}}'
+#    uses: ./.github/workflows/bili-v2.yml
+#    with:
+#      exec-even-exist: false
+#      bvid: ${{ fromJSON(matrix.event).payload.bvid }}
+#      filepath-template: ${{ fromJSON(matrix.event).payload.presetFilepathTemplate }}
+#      markdown-template: ${{ fromJSON(matrix.event).payload.presetMarkdownTemplate }}
+#      prompt-template: ${{ fromJSON(matrix.event).payload.presetPromptTemplate }}
+#      system-prompt-template: ${{ fromJSON(matrix.event).payload.presetSystemPromptTemplate }}
