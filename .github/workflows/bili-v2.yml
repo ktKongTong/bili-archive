@@ -14,7 +14,7 @@ on:
         description: "system-prompt-template"
         required: false
         type: string
-      prompt-template-template:
+      prompt-template:
         description: "prompt"
         required: false
         type: string
@@ -43,8 +43,8 @@ on:
         description: "system-prompt-template"
         required: false
         type: string
-      prompt-template-template:
-        description: "prompt"
+      prompt-template:
+        description: "prompt-template"
         required: false
         type: string
       markdown-template:
