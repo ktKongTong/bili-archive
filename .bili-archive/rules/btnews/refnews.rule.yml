@@ -5,7 +5,7 @@ listen:
         post:
           mid: 1556651916
           keywords: 参考信息
-          filepath: docs/{{owner.name}}/{{title}}.md
+          filepath: docs/小戴晨读/{{title}}.md
 match:
   - id: 参考信息
     platform:
@@ -14,7 +14,7 @@ match:
           owner.name: "小黛晨读"
           title: "参考信息"
         template:
-          filepath: docs/{{video.owner.name}}/{{video.title}}.md
+          filepath: docs/小戴晨读/{{video.title}}.md
           prompt:
             system: |
               这是一段标题为【{{video.title}}】的视频音频，请识别对应的语言，并转换为对应文本。
