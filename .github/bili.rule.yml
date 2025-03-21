@@ -1,6 +1,6 @@
 
 watch:
-  - id: Koala聊开源-科技周报
+  - id: 睡前消息
     platform:
       bilibili:
         post:
@@ -8,21 +8,12 @@ watch:
           keywords: 睡前消息
           script: '../../scripts/bilibili/马督工.mjs'
           filepath: docs/btnews/{{title}}.md
-  - id: m 的收藏夹
-    platform:
-      bilibili:
-        collection:
-          mid: 316568752
-          collectionId: 3232
-          script: '../scripts/bilibili/${{name}}.mjs'
 
 
 match:
   - id: Koala聊开源-科技周报
     platform:
       bilibili:
-        # 1. script, do match or template
-        # watch exec ? decide
         script: ../../scripts/bilibili/{{video.owner.name}}.mjs
         condition:
           owner.mid: 489667127
