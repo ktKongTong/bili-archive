@@ -64,15 +64,14 @@ on:
           - "gemini-2.0-flash"
 
 env:
-  bvid: ${{github.event.inputs.bvid }}
-  exec-even-exist: ${{ github.event.inputs.exec-even-exist }}
-  filepath-template: ${{ github.event.inputs.filepath-template }}
-  prompt-template: ${{ github.event.inputs.prompt-template }}
-  system-prompt-template: ${{ github.event.inputs.system-prompt-template }}
-  markdown-template: ${{ github.event.inputs.markdown-template }}
-  commit-message-template: ${{ github.event.inputs.commit-message-template }}
-  model: ${{ github.event.inputs.model }}
-
+  bvid: ${{inputs.bvid }}
+  exec-even-exist: ${{ inputs.exec-even-exist }}
+  filepath-template: ${{ inputs.filepath-template }}
+  prompt-template: ${{ inputs.prompt-template }}
+  system-prompt-template: ${{ inputs.system-prompt-template }}
+  markdown-template: ${{ inputs.markdown-template }}
+  commit-message-template: ${{ inputs.commit-message-template }}
+  model: ${{ inputs.model }}
   branch: 'fetch/${{inputs.bvid}}'
 jobs:
   get-video:
