@@ -27,6 +27,7 @@ jobs:
 #      - name: show matrix
 #        run: echo 'matrix ${{matrix.event.bvid}}'
     uses: ./.github/workflows/bili-v2.yml
+    secrets: inherit
     with:
       exec-even-exist: false
       bvid: ${{ matrix.event.bvid }}
