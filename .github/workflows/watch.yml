@@ -22,15 +22,15 @@ jobs:
     strategy:
       matrix:
         event: ${{ fromJSON(needs.watch.outputs.result) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: show matrix
-        run: echo 'matrix ${{toJSON(matrix.event)}}'
-#    uses: ./.github/workflows/bili-v2.yml
-#    with:
-#      exec-even-exist: false
-#      bvid: ${{ fromJSON(matrix.event).payload.bvid }}
-#      filepath-template: ${{ fromJSON(matrix.event).payload.presetFilepathTemplate }}
-#      markdown-template: ${{ fromJSON(matrix.event).payload.presetMarkdownTemplate }}
-#      prompt-template: ${{ fromJSON(matrix.event).payload.presetPromptTemplate }}
-#      system-prompt-template: ${{ fromJSON(matrix.event).payload.presetSystemPromptTemplate }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: show matrix
+#        run: echo 'matrix ${{toJSON(matrix.event)}}'
+    uses: ./.github/workflows/bili-v2.yml
+    with:
+      exec-even-exist: false
+      bvid: ${{ fromJSON(matrix.event).payload.bvid }}
+      filepath-template: ${{ fromJSON(matrix.event).payload.presetFilepathTemplate }}
+      markdown-template: ${{ fromJSON(matrix.event).payload.presetMarkdownTemplate }}
+      prompt-template: ${{ fromJSON(matrix.event).payload.presetPromptTemplate }}
+      system-prompt-template: ${{ fromJSON(matrix.event).payload.presetSystemPromptTemplate }}
