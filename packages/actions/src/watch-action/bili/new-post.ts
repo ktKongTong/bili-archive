@@ -1,11 +1,12 @@
-import { PostWatchRule } from '../../shared/watch-type.js'
+
 import { getRecentPost } from '../../shared/api/bilibili/index.js'
 import * as core from '@actions/core'
 import { render } from 'micromustache'
 import { modifyTemplate } from '../../shared/template.js'
 import { format } from '../../shared/format.js'
 import fs from 'fs'
-import path from 'node:path'
+import { loadScript } from '../../shared/load-script.js'
+import { ResultTemplate,BiliPostListenRule } from '../../shared/type.js'
 
 const createPreset = () => ({
   filepath: undefined,
@@ -15,23 +16,20 @@ const createPreset = () => ({
   },
   markdown: undefined,
   'commit-message': undefined
-})
+} as ResultTemplate)
 
-export const handlePostRule = async (postRule: PostWatchRule) => {
+export const handlePostRule = async (postRule: BiliPostListenRule) => {
   let preset = createPreset()
   const v = await getRecentPost(postRule)
   let filepath = undefined
   if(v && v.data) {
     const video = v.data.archives[0]
-    core.debug(`load-watch-script-template: ${postRule.script}`)
+    core.debug(`load-listen-script-template: ${postRule.script}`)
     if(postRule.script) {
       const script = render(postRule.script, v.data)
-      const scriptPath = path.join(process.cwd(), script)
-      core.debug(`loading-watch-script: ${scriptPath}`)
-      const {watch} = await import(scriptPath)
-      core.debug(`loaded-watch-script, ${scriptPath}`)
-      if(watch && typeof watch === 'function') {
-        const { filepath: fp, template } = watch(v.data)
+      const { listen } = await loadScript(script)
+      if(listen && typeof listen === 'function') {
+        const { filepath: fp, template } = listen(v.data)
         if (fp && typeof fp === 'string') {
           filepath = fp
           if(template) modifyTemplate(preset, template)

@@ -1,35 +1,18 @@
 import * as core from "@actions/core";
-import * as fs from 'fs'
-import { parse } from 'yaml'
-import { Rule } from '../shared/watch-type.js'
 import { handlePostRule } from './bili/new-post.js'
+import { ruleLoader } from '../shared/rule-loader.js'
+import type {Event} from '../shared/type.js'
 
-// rules
-const watchFile = core.getInput("watch-file") || ".github/bili.rule.yml"
-const ruleString = fs.readFileSync(watchFile, 'utf8')
-const res = parse(ruleString) as Rule
-
-type Event = {
-  type: 'bilibili',
-  payload: {
-    bvid: string
-    presetFilepathTemplate?: string | undefined
-    presetSystemPromptTemplate?: string | undefined
-    presetPromptTemplate?: string | undefined
-    presetMarkdownTemplate?: string | undefined
-    presetCommitMessageTemplate?: string | undefined
-  }
-}
-
+const watchPath = core.getInput("rule-path") || ".bili-archive/rules"
+const rules = await ruleLoader(watchPath)
 const output = [] as Event[]
-
 
 // 1. get the newest video
 // 2. get filepath
 // 3. check if file exist
 // 4. if exist skip
 // 5. if not exist, start a fetch stage
-for (const rule of res.watch) {
+for (const rule of rules.listen) {
   const {post: postRule, season, series, collection } = rule.platform.bilibili!
   if(postRule) {
     const res = await handlePostRule(postRule).catch(e => {

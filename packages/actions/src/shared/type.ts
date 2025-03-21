@@ -10,48 +10,74 @@ export type Template = {
 }
 
 export type ResultTemplate = {
-  filepath: string | undefined
+  filepath?: string | undefined
   prompt: {
     system?: string,
     user?: string
     jsonschema?: any
   }
-  markdown: string | undefined
-  "commit-message": string | undefined
+  markdown?: string | undefined
+  "commit-message"?: string | undefined
 }
 
-export type AvailablePlatform = 'bilibili' | 'youtube' | 'wechat-official-account'
-
-export type BiliCondition = {
-  // mid?: number | string,
-  // 'channel-id'?: number | string,
-  // title?: string,
-}
 
 export type Condition<T extends Record<string, any> = Record<string, any>> = {
   and?: Condition<T>
   or?: Condition<T>
 } & T
 
-export type PlatformCondition = {
-  'bilibili': BiliCondition
+
+
+
+export type MatchRule = {
+  id?: string
+  platform: {
+    bilibili: {
+      condition: Condition,
+      template: Template,
+      // script, will execute if condition match
+      script?: string
+    },
+  }
+  fallback?: Template
 }
 
-export type PlatformRule = {
-  condition: Condition<PlatformCondition[keyof PlatformCondition]>,
-  template?: Template,
+export type BiliPostListenRule = {
+  mid: string
+  keywords: string
+  // use to check if file exist
   script?: string
+  filepath: string
+  template: Template
 }
 
-export type ConditionalRule = {
-  id: string
-  description: string
-  platform: Record<AvailablePlatform, { condition: Condition<PlatformCondition[keyof PlatformCondition]>, template?: Template, script?: string}>
-  fallback?: { template?: Template, script?: string }
+export type ListenRule = {
+  id?: string
+  platform: {
+    bilibili: {
+      post: BiliPostListenRule,
+      season?: unknown,
+      series?: unknown,
+      collection?: unknown,
+    }
+  }
 }
 
 export type Rule = {
-  script?: string,
-  match: ConditionalRule[]
+  match?: MatchRule[]
+  listen?: ListenRule[]
   fallback?: Template
+}
+
+// will as listen action output
+export type Event = {
+  type: 'bilibili',
+  payload: {
+    bvid: string
+    presetFilepathTemplate?: string
+    presetSystemPromptTemplate?: string
+    presetPromptTemplate?: string
+    presetMarkdownTemplate?: string
+    presetCommitMessageTemplate?: string
+  }
 }
