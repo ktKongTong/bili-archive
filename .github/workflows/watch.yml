@@ -4,7 +4,7 @@ on:
 #    - cron: '0 0 * * *'
   workflow_dispatch:
 jobs:
-  Watch:
+  watch:
     runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.watch.outputs.result }}
@@ -15,8 +15,8 @@ jobs:
       - name: Watch
         run: |
           echo "Watch result: ${{ steps.watch.outputs.result }}"
-  Fetch:
-    needs: [Watch]
+  fetch:
+    needs: watch
     strategy:
       matrix:
         payload: ${{ fromJSON(needs.watch.outputs.result).*.payload }}
