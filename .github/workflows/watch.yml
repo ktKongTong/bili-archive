@@ -29,8 +29,8 @@ jobs:
     uses: ./.github/workflows/bili-v2.yml
     with:
       exec-even-exist: false
-      bvid: ${{ matrix.event.payload.bvid }}
-      filepath-template: ${{ matrix.event.payload.presetFilepathTemplate }}
-      markdown-template: ${{ matrix.event.payload.presetMarkdownTemplate }}
-      prompt-template: ${{ matrix.event.payload.presetPromptTemplate }}
-      system-prompt-template: ${{ matrix.event.payload.presetSystemPromptTemplate }}
+      bvid: ${{ matrix.event.bvid }}
+      filepath-template: ${{ matrix.event.presetFilepathTemplate }}
+      markdown-template: ${{ matrix.event.presetMarkdownTemplate }}
+      prompt-template: ${{ matrix.event.presetPromptTemplate }}
+      system-prompt-template: ${{ matrix.event.presetSystemPromptTemplate }}
