@@ -7,25 +7,30 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.watch.outputs.result }}
+      result: ${{ steps.set-output.outputs.TARGET_MATRIX }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/watch-action
         id: watch
-      - name: Watch
+      - name: Set output
+        id: set-output
         run: |
-          echo "Watch result: ${{ steps.watch.outputs.result }}"
+          echo "TARGET_MATRIX=$(echo '${{ steps.watch.outputs.result }}' | jq '.[0:4]' | jq -r 'tostring')" >> $GITHUB_OUTPUT
+          echo 'Watch result: ${{ steps.watch.outputs.result }}'
   fetch:
     needs: watch
+#    runs-on: ubuntu-latest
     strategy:
       matrix:
         payload: ${{ fromJSON(needs.watch.outputs.result).*.payload }}
-
+#    steps:
+#      - name: show matrix
+#        run: echo "matrix ${{toJSON(matrix.payload)}}"
     uses: ./.github/workflows/bili-v2.yml
     with:
       exec-even-exist: false
       bvid: ${{ fromJSON(matrix.payload).bvid }}
-      filepath-template: ${{ fromJSON(matrix.payload).filepath-template }}
-      markdown-template: ${{ fromJSON(matrix.payload).markdown-template }}
-      prompt-template: ${{ fromJSON(matrix.payload).prompt-template }}
-      system-prompt-template: ${{ fromJSON(matrix.payload).system-prompt-template }}
+      filepath-template: ${{ fromJSON(matrix.payload).presetFilepathTemplate }}
+      markdown-template: ${{ fromJSON(matrix.payload).presetMarkdownTemplate }}
+      prompt-template: ${{ fromJSON(matrix.payload).presetPromptTemplate }}
+      system-prompt-template: ${{ fromJSON(matrix.payload).presetSystemPromptTemplate }}
