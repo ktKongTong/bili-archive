@@ -1,9 +1,11 @@
 import * as core from "@actions/core";
 import * as fs from 'node:fs'
 import {parse} from 'yaml'
-import {  Rule, Template } from './type.js'
-import { testRule } from './test-rule.js'
-import { render } from "micromustache";
+import { ResultTemplate, Rule } from '../shared/type.js'
+import { testRule } from '../shared/test-rule.js'
+import { modifyTemplate } from '../shared/template.js'
+import { format } from '../shared/format.js'
+
 const input = core.getInput("variable");
 const matchFile = core.getInput("match-file") || ".github/bili.rule.yml"
 const presetFilepathTemplate = core.getInput("preset-filepath-template") || undefined
@@ -11,9 +13,9 @@ const presetSystemPromptTemplate = core.getInput("preset-system-prompt-template"
 const presetPromptTemplate = core.getInput("preset-prompt-template") || undefined
 const presetMarkdownTemplate = core.getInput("preset-markdown-template") || undefined
 const presetCommitMessageTemplate = core.getInput("preset-commit-message-template") || undefined
+
 const data = JSON.parse(input)
 const ruleString = fs.readFileSync(matchFile, 'utf8')
-
 const res = parse(ruleString) as Rule
 
 let template = {
@@ -26,23 +28,33 @@ let template = {
   'commit-message': presetCommitMessageTemplate
 }
 
-const applyRule = (cur?: Template) => {
-  if(!template.prompt.system) {
-    template.prompt.system = cur?.prompt?.system
+
+
+// watch, match, calculate template script
+const applyScript = async (template: ResultTemplate,script?: string) => {
+  let applied = false
+  if(script) {
+    try {
+      const res = format(script, {video: data, platform: 'bilibili'})
+      console.log("load-script", script, res)
+      const { template: fn } = await import(res)
+      if(fn && typeof fn == 'function') {
+        let result = fn(data)
+        if(result && typeof result === 'object') {
+          applied = modifyTemplate(template,result)
+        }
+      }
+    }catch (e) {
+      applied = false
+      console.error(e)
+    }
   }
-  if(!template.prompt.user) {
-    template.prompt.user = cur?.prompt?.user
-  }
-  if(!template.filepath) {
-    template.filepath = cur?.filepath
-  }
-  if(!template.markdown) {
-    template.markdown = cur?.markdown
-  }
-  if(!template['commit-message']) {
-    template['commit-message'] = cur?.['commit-message']
-  }
+  return applied
 }
+
+
+
+
 
 outer: for(const rule of res.match) {
   if(rule.platform) {
@@ -50,43 +62,20 @@ outer: for(const rule of res.match) {
     for(const key of platformRuleKey) {
       const platform = rule.platform[key as keyof typeof rule.platform]
       const condition = platform.condition
-      let scriptApplied = false
-      if(platform.script) {
-        try {
-          const res = render(platform.script, {video: data, platform: platform})
-          console.log("load-script", platform.script, res)
-          const { template: fn } = await import(res)
-          if(fn && typeof fn == 'function') {
-            let result = fn(data)
-            if(result) {
-              if(typeof result === 'object') {
-                applyRule(result)
-              }
-              // one field is set and result is not undefined or
-              if(
-                template.markdown || template.filepath ||
-                template.prompt.system || template.prompt.user ||
-                template['commit-message']
-              ) {
-                scriptApplied = true
-              }
-            }
-          }
-        }catch (e) {
-          console.error(e)
-        }
-      }
+      const scriptApplied = await applyScript(template, platform.script)
       if(scriptApplied || testRule(condition, data)) {
-        applyRule(platform.template)
-        // apply fallback template
-        applyRule(rule.fallback?.template)
+        // apply platform-specific(like bilibili output audio) template
+        modifyTemplate(template, platform.template)
+        modifyTemplate(template, rule.fallback?.template)
         break outer
       }
     }
   }
 }
+modifyTemplate(template, res.fallback)
 
-applyRule(res.fallback)
+
+
 
 core.setOutput('filepath-template', template.filepath)
 core.setOutput('system-prompt-template', template.prompt?.system)

@@ -9,7 +9,6 @@ watch:
           script: '../../scripts/bilibili/马督工.mjs'
           filepath: docs/btnews/{{title}}.md
 
-
 match:
   - id: Koala聊开源-科技周报
     platform:

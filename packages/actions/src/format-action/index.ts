@@ -25,8 +25,6 @@ function escapeAndReplaceLeafValues(
   specialChars: string[],
   replacementValue: string = "_"
 ): any {
-
-
   function escapeString(s: any): any {
     if (typeof s !== "string") {
       return s;

@@ -37,6 +37,12 @@ export type PlatformCondition = {
   'bilibili': BiliCondition
 }
 
+export type PlatformRule = {
+  condition: Condition<PlatformCondition[keyof PlatformCondition]>,
+  template?: Template,
+  script?: string
+}
+
 export type ConditionalRule = {
   id: string
   description: string
