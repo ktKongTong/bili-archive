@@ -5,10 +5,8 @@ const regex = /【睡前消息(\d{1,4})期?】/
 
 // load watch
 export const watch = function(data) {
-  console.log("executing", JSON.stringify(data, null, 2));
   const title = data.archives[0].title
   if (regex.test(title)) {
-    console.log("watch-match")
     const [full, index] = regex.exec(title)
     const indexNum = parseInt(index)
     let rangeStart = Math.floor(indexNum / 100) * 100 + 1
