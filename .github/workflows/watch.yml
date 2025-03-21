@@ -22,7 +22,7 @@ jobs:
 #    runs-on: ubuntu-latest
     strategy:
       matrix:
-        payload: ${{ fromJSON(needs.watch.outputs.result).*.payload }}
+        payload: ${{ needs.watch.outputs.result.*.payload }}
 #    steps:
 #      - name: show matrix
 #        run: echo "matrix ${{toJSON(matrix.payload)}}"
