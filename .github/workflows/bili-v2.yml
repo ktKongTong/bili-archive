@@ -25,7 +25,6 @@ on:
       exec-even-exist:
         type: 'boolean'
         required: false
-        default: 'false'
       model:
         type: string
         description: "gemini model"
