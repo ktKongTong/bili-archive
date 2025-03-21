@@ -23,7 +23,7 @@ jobs:
 
     uses: ./.github/workflows/bili-v2.yml
     with:
-      exec-even-exist: 'false'
+      exec-even-exist: false
       bvid: ${{ fromJSON(matrix.payload).bvid }}
       filepath-template: ${{ fromJSON(matrix.payload).filepath-template }}
       markdown-template: ${{ fromJSON(matrix.payload).markdown-template }}
