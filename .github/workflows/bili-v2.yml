@@ -1,26 +1,61 @@
 name: bili-v2
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       bvid:
+        description: "Bilibili bvid"
         required: true
-        description: "bvid"
-      mid:
+        type: string
+      filepath-template:
+        description: "filepath-template"
         required: false
-        description: "Bilibili member id"
-      keywords:
+        type: string
+      system-prompt-template:
+        description: "system-prompt-template"
         required: false
-        description: "keywords filter"
+        type: string
+      prompt-template-template:
+        description: "prompt"
+        required: false
+        type: string
+      markdown-template:
+        description: "markdown-template"
+        required: false
+        type: string
       exec-even-exist:
         type: 'boolean'
         required: false
         default: 'false'
-      system-prompt:
-        description: "system-prompt"
+      model:
+        type: string
+        description: "gemini model"
+        default: "gemini-2.0-flash"
+  workflow_dispatch:
+    inputs:
+      bvid:
+        description: "Bilibili bvid"
+        required: true
+        type: string
+      filepath-template:
+        description: "filepath-template"
         required: false
-      prompt:
+        type: string
+      system-prompt-template:
+        description: "system-prompt-template"
+        required: false
+        type: string
+      prompt-template-template:
         description: "prompt"
         required: false
+        type: string
+      markdown-template:
+        description: "markdown-template"
+        required: false
+        type: string
+      exec-even-exist:
+        type: 'boolean'
+        required: false
+        default: 'false'
       model:
         description: "gemini model"
         type: choice
@@ -31,15 +66,17 @@ on:
 
 env:
   bvid: ${{github.event.inputs.bvid }}
-  mid: ${{ github.event.inputs.mid }}
-  keywords: ${{ github.event.inputs.keywords }}
-  prompt: ${{ github.event.inputs.prompt }}
-  system-prompt: ${{ github.event.inputs.system-prompt }}
-  model: ${{ github.event.inputs.model }}
   exec-even-exist: ${{ github.event.inputs.exec-even-exist }}
+  filepath-template: ${{ github.event.inputs.filepath-template }}
+  prompt-template: ${{ github.event.inputs.prompt-template }}
+  system-prompt-template: ${{ github.event.inputs.system-prompt-template }}
+  markdown-template: ${{ github.event.inputs.markdown-template }}
+  commit-message-template: ${{ github.event.inputs.commit-message-template }}
+  model: ${{ github.event.inputs.model }}
+
   branch: 'fetch/${{inputs.bvid}}'
 jobs:
-  batch-get-video:
+  get-video:
     runs-on: ubuntu-latest
     steps:
       - name: get videos
@@ -58,7 +95,9 @@ jobs:
           bili-proxy: ${{ secrets.BILI_STREAM_PROXY }}
           exec-even-exist: ${{ env.exec-even-exist }}
           branch: ${{ env.branch }}
-          prompt-template: ${{ env.prompt }}
-          system-prompt-template: ${{ env.system-prompt }}
-          commit-message-template: ":memo: new docs ${{ steps.bili.outputs.title }}"
           type: 'pr'
+          filepath-template: ${{ env.filepath-template }}
+          markdown-template: ${{ env.markdown-template }}
+          prompt-template: ${{ env.prompt-template }}
+          system-prompt-template: ${{ env.system-prompt-template }}
+          commit-message-template: ":memo: new docs ${{ steps.bili.outputs.title }}"

@@ -1,19 +1,37 @@
-#match-script: '.github/scripts/match.js'
-#script: .github/scripts/{{platform}}/{{video.owner.name}}.js
+
+watch:
+  - id: Koala聊开源-科技周报
+    platform:
+      bilibili:
+        post:
+          mid: 316568752
+          keywords: 睡前消息
+          script: '../../scripts/bilibili/马督工.mjs'
+          filepath: docs/btnews/{{title}}.md
+  - id: m 的收藏夹
+    platform:
+      bilibili:
+        collection:
+          mid: 316568752
+          collectionId: 3232
+          script: '../scripts/bilibili/${{name}}.mjs'
+
+
 match:
   - id: Koala聊开源-科技周报
     platform:
       bilibili:
+        # 1. script, do match or template
+        # watch exec ? decide
+        script: ../../scripts/bilibili/{{video.owner.name}}.mjs
         condition:
           owner.mid: 489667127
           title: "科技周报"
-        # script: .github/scripts/{{platform}}/{{video.owner.name}}.js
         template:
           prompt:
             system: |
               这是一段标题为【{{video.title}}】的视频音频，请识别对应的语言，并转换为对应文本。
               请为文本进行合适的分段，并添加标点符号，段落前后用两个换行符进行分隔。
-            # TODO, 将置顶评论引入作为Prompt，可以为每节加上链接，如果有可能，
             user: |
               这是一档科技类周报节目，主要介绍 HackerNews 上发现的新产品/工具，里面包含一些固定搭配/习惯性用语，请参考。
               - 一些固定搭配：【Koala】，【欢迎收看xxx期科技周报】，【了解行业资讯，把握行业脉搏，大家好，我是Koala】
@@ -26,10 +44,10 @@ match:
   - id: 睡前消息
     platform:
       bilibili:
+        script: ../../scripts/bilibili/{{video.owner.name}}.mjs
         condition:
           owner.name: "马督工"
           title: "睡前消息"
-        # script: .github/scripts/{{platform}}/{{video.owner.name}}.js
         template:
           filepath: docs/btnews/{{video.title}}.md
           prompt:

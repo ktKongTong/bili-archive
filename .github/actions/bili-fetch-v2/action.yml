@@ -28,8 +28,11 @@ inputs:
   context:
     description: "more context, like channel info"
     required: false
-  path-template:
+  filepath-template:
     description: "file path template"
+    required: false
+  markdown-template:
+    description: "markdown template"
     required: false
   system-prompt-template:
     description: "system prompt template"
@@ -60,6 +63,12 @@ runs:
       uses: ./.github/actions/template-loader
       with:
         variable: ${{steps.bili.outputs.video }}
+        preset-filepath-template: ${{ inputs.filepath-template }}
+        preset-prompt-template: ${{ inputs.prompt-template }}
+        preset-system-prompt-template: ${{ inputs.system-prompt-template }}
+        preset-markdown-template: ${{ inputs.markdown-template }}
+        preset-commit-message-template: ${{ inputs.commit-message-template }}
+
     - name: show template result
       shell: bash
       run: |

@@ -1,6 +1,6 @@
 {
-  "name": "@repo/template-loader-action",
-  "description": "template-loader",
+  "name": "@repo/watch-action",
+  "description": "watch-action",
   "version": "0.1.0",
   "author": "kt",
   "type": "module",
@@ -20,7 +20,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "bundle": "npm run package && mv dist/index.mjs ../../.github/actions/template-loader && rm -rf dist",
+    "bundle": "npm run package && mv dist/index.mjs ../../.github/actions/watch-action && rm -rf dist",
     "ci-test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "local-action": "npx @github/local-action . src/main.ts .env",

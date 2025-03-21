@@ -1,0 +1,8 @@
+name: watch-action
+inputs:
+  match-file:
+    description: "match file"
+    required: false
+runs:
+  using: node20
+  main: index.mjs

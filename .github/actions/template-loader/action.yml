@@ -9,22 +9,32 @@ inputs:
   match-script:
     description: "match script"
     required: false
+  preset-filepath-template:
+    description: "filepath template"
+    required: false
+  preset-system-prompt-template:
+    description: "system prompt template"
+    required: false
+  preset-prompt-template:
+    description: "prompt template"
+    required: false
+  preset-markdown-template:
+    description: "markdown template"
+    required: false
+  preset-commit-message-template:
+    description: "commit message template"
+    required: false
 outputs:
   path-template:
     description: 'template result'
-#    value: ${{ steps.final-output.outputs.result }}
   system-prompt-template:
     description: 'template result'
-#    value: ${{ steps.final-output.outputs.result }}
   prompt-template:
     description: 'template result'
-#    value: ${{ steps.final-output.outputs.result }}
   markdown-template:
     description: 'template result'
-#    value: ${{ steps.final-output.outputs.result }}
   commit-message-template:
     description: 'template result'
-#    value: ${{ steps.final-output.outputs.result }}
 runs:
   using: node20
   main: index.mjs

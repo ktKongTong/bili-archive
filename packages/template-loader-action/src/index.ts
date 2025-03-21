@@ -1,24 +1,29 @@
 import * as core from "@actions/core";
 import * as fs from 'node:fs'
 import {parse} from 'yaml'
-import { ResultTemplate, Rule, Template } from './type.js'
+import {  Rule, Template } from './type.js'
 import { testRule } from './test-rule.js'
+import { render } from "micromustache";
 const input = core.getInput("variable");
 const matchFile = core.getInput("match-file") || ".github/bili.rule.yml"
-
+const presetFilepathTemplate = core.getInput("preset-filepath-template") || undefined
+const presetSystemPromptTemplate = core.getInput("preset-system-prompt-template") || undefined
+const presetPromptTemplate = core.getInput("preset-prompt-template") || undefined
+const presetMarkdownTemplate = core.getInput("preset-markdown-template") || undefined
+const presetCommitMessageTemplate = core.getInput("preset-commit-message-template") || undefined
 const data = JSON.parse(input)
 const ruleString = fs.readFileSync(matchFile, 'utf8')
 
 const res = parse(ruleString) as Rule
 
-let template: ResultTemplate = {
-  filepath: undefined,
+let template = {
+  filepath: presetFilepathTemplate,
   prompt: {
-    user: undefined,
-    system: undefined,
+    user: presetPromptTemplate,
+    system: presetSystemPromptTemplate,
   },
-  markdown: undefined,
-  'commit-message': undefined
+  markdown: presetMarkdownTemplate,
+  'commit-message': presetCommitMessageTemplate
 }
 
 const applyRule = (cur?: Template) => {
@@ -45,8 +50,33 @@ outer: for(const rule of res.match) {
     for(const key of platformRuleKey) {
       const platform = rule.platform[key as keyof typeof rule.platform]
       const condition = platform.condition
-      if(testRule(condition, data)) {
-        // apply conditional template
+      let scriptApplied = false
+      if(platform.script) {
+        try {
+          const res = render(platform.script, {video: data, platform: platform})
+          console.log("load-script", platform.script, res)
+          const { template: fn } = await import(res)
+          if(fn && typeof fn == 'function') {
+            let result = fn(data)
+            if(result) {
+              if(typeof result === 'object') {
+                applyRule(result)
+              }
+              // one field is set and result is not undefined or
+              if(
+                template.markdown || template.filepath ||
+                template.prompt.system || template.prompt.user ||
+                template['commit-message']
+              ) {
+                scriptApplied = true
+              }
+            }
+          }
+        }catch (e) {
+          console.error(e)
+        }
+      }
+      if(scriptApplied || testRule(condition, data)) {
         applyRule(platform.template)
         // apply fallback template
         applyRule(rule.fallback?.template)
@@ -58,27 +88,6 @@ outer: for(const rule of res.match) {
 
 applyRule(res.fallback)
 
-// apply match
-
-
-
-// const conditions = res.matchRules
-
-
-// conditions
-
-// const Rules = []
-
-// 1. match script
-//   direct use
-
-// 2. match condition
-
-// 3.
-
-// template-script
-
-// console.log(template)
 core.setOutput('filepath-template', template.filepath)
 core.setOutput('system-prompt-template', template.prompt?.system)
 core.setOutput('prompt-template',  template.prompt?.user)

@@ -1,0 +1,31 @@
+name: Watch
+on:
+#  schedule:
+#    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  Watch:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.watch.outputs.result }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/watch-action
+        id: watch
+      - name: Watch
+        run: |
+          echo "Watch result: ${{ steps.watch.outputs.result }}"
+#  Fetch:
+#    needs: [Watch]
+#    strategy:
+#      matrix:
+#        payload: ${{ fromJSON(needs.watch.outputs.result).*.payload }}
+#
+#    uses: ./.github/workflows/bili-v2.yml
+#    with:
+#      exec-even-exist: 'false'
+#      bvid: ${{ fromJSON(matrix.payload).bvid }}
+#      filepath-template: ${{ fromJSON(matrix.payload).filepath-template }}
+#      markdown-template: ${{ fromJSON(matrix.payload).markdown-template }}
+#      prompt-template: ${{ fromJSON(matrix.payload).prompt-template }}
+#      system-prompt-template: ${{ fromJSON(matrix.payload).system-prompt-template }}
