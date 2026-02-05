@@ -1,0 +1,7 @@
+packages:
+  - fuma
+  - datasource
+  - packages/**/*
+
+patchedDependencies:
+  fumadocs-core: patches/fumadocs-core.patch
